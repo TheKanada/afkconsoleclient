@@ -264,6 +264,16 @@ class DashboardStats(BaseModel):
     recent_activity: List[dict]
 
 # WebSocket Manager for real-time updates
+class SystemLog(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    level: str  # info, warning, error
+    message: str
+    user_id: Optional[str] = None
+    action: Optional[str] = None
+    ip_address: Optional[str] = None
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# WebSocket Manager for real-time updates
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
@@ -273,15 +283,39 @@ class ConnectionManager:
         self.active_connections.append(websocket)
 
     def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+        try:
+            self.active_connections.remove(websocket)
+        except ValueError:
+            pass  # Connection already removed
 
     async def broadcast_message(self, message: dict):
+        dead_connections = []
         for connection in self.active_connections:
             try:
                 await connection.send_json(message)
             except:
-                # Remove dead connections
-                self.active_connections.remove(connection)
+                dead_connections.append(connection)
+        
+        # Remove dead connections
+        for dead_connection in dead_connections:
+            try:
+                self.active_connections.remove(dead_connection)
+            except ValueError:
+                pass
+
+    async def log_system_event(self, level: str, message: str, user_id: str = None, action: str = None):
+        """Log system events to database"""
+        if db:
+            try:
+                log_entry = SystemLog(
+                    level=level,
+                    message=message,
+                    user_id=user_id,
+                    action=action
+                )
+                await db.system_logs.insert_one(log_entry.dict())
+            except Exception as e:
+                logger.error(f"Failed to log system event: {e}")
 
 manager = ConnectionManager()
 
