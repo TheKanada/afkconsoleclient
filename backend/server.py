@@ -1128,7 +1128,7 @@ app.include_router(api_router)
 # Security middleware
 app.add_middleware(
     TrustedHostMiddleware, 
-    allowed_hosts=["minecraft-afk.preview.emergentagent.com", "localhost", "127.0.0.1"]
+    allowed_hosts=["afkcraft-console.preview.emergentagent.com", "minecraft-afk.preview.emergentagent.com", "localhost", "127.0.0.1"]
 )
 
 app.add_middleware(
