@@ -350,7 +350,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 async def check_database_connection():
     """Check if database is available"""
-    if not db or not client:
+    if db is None or client is None:
         raise HTTPException(status_code=503, detail="Database not available. Please check your MongoDB connection.")
     
     try:
