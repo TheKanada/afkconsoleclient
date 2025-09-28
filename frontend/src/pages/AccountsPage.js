@@ -109,15 +109,7 @@ const AccountsPage = () => {
   const handleDisconnectAccount = async (accountId) => {
     try {
       const response = await axios.post(`${API}/accounts/${accountId}/disconnect`);
-      
-      if (response.data.simulation) {
-        toast.success("Account disconnection simulated", {
-          description: "Note: This is a simulation. Real Minecraft connection not implemented yet."
-        });
-      } else {
-        toast.success("Account disconnected successfully");
-      }
-      
+      toast.success("Account disconnected from Minecraft server successfully!");
       fetchAccounts();
     } catch (error) {
       console.error("Error disconnecting account:", error);
