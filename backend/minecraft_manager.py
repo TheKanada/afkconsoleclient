@@ -261,6 +261,25 @@ class MinecraftBot:
         except Exception as e:
             logger.error(f"Error sending login messages: {e}")
     
+    def _send_world_change_messages(self):
+        """Send configured world change messages"""
+        try:
+            # Wait a bit for world change to stabilize
+            time.sleep(2)
+            
+            world_change_messages = self.server_settings.get('world_change_messages', [])
+            for i, msg_config in enumerate(world_change_messages):
+                if i > 0:  # Add delay between messages
+                    time.sleep(msg_config.get('delay', 1))
+                
+                message = msg_config.get('message', '')
+                if message and self.is_connected:
+                    self.send_chat_message(message)
+                    logger.info(f"World change message sent from {self.account_info.get('nickname')}: {message}")
+                    
+        except Exception as e:
+            logger.error(f"Error sending world change messages: {e}")
+    
     def _auto_reconnect(self):
         """Auto-reconnect logic with proper thread-safe async coordination"""
         for attempt in range(3):
