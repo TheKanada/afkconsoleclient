@@ -15,6 +15,7 @@ import jwt
 import bcrypt
 import asyncio
 import json
+from minecraft_manager import MinecraftManager
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
