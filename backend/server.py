@@ -19,29 +19,148 @@ import json
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection with error handling
+# MongoDB connection with comprehensive setup
 try:
-    mongo_url = os.environ.get('MONGO_URL')
+    mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
     db_name = os.environ.get('DB_NAME', 'minecraft_afk_console')
     
-    if not mongo_url:
-        raise ValueError("MONGO_URL environment variable is required")
+    logger.info(f"Connecting to MongoDB: {mongo_url}")
+    logger.info(f"Database name: {db_name}")
     
-    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+    client = AsyncIOMotorClient(
+        mongo_url, 
+        serverSelectionTimeoutMS=10000,
+        connectTimeoutMS=10000,
+        socketTimeoutMS=10000,
+        maxPoolSize=10,
+        minPoolSize=1
+    )
     db = client[db_name]
     
-    # Test connection
-    async def test_db_connection():
-        try:
-            await client.admin.command('ping')
-            logger.info("Successfully connected to MongoDB")
-        except Exception as e:
-            logger.error(f"Failed to connect to MongoDB: {e}")
-            raise
+    # Database schema and initialization
+    class DatabaseManager:
+        def __init__(self, database):
+            self.db = database
+            
+        async def initialize_database(self):
+            """Initialize database with required collections and indexes"""
+            try:
+                logger.info("🔧 Initializing database...")
+                
+                # Test connection first
+                await client.admin.command('ping')
+                logger.info("✅ MongoDB connection successful")
+                
+                # Create collections if they don't exist
+                await self.create_collections()
+                
+                # Create indexes for performance
+                await self.create_indexes()
+                
+                # Create default admin user if none exists
+                await self.ensure_admin_user()
+                
+                logger.info("🎉 Database initialization completed successfully!")
+                
+            except Exception as e:
+                logger.error(f"❌ Database initialization failed: {e}")
+                raise
+        
+        async def create_collections(self):
+            """Create all required collections"""
+            collections = [
+                'users',
+                'minecraft_accounts', 
+                'chat_messages',
+                'server_settings',
+                'system_logs'
+            ]
+            
+            existing_collections = await self.db.list_collection_names()
+            
+            for collection_name in collections:
+                if collection_name not in existing_collections:
+                    await self.db.create_collection(collection_name)
+                    logger.info(f"📁 Created collection: {collection_name}")
+                else:
+                    logger.info(f"📁 Collection already exists: {collection_name}")
+        
+        async def create_indexes(self):
+            """Create indexes for better performance"""
+            try:
+                # Users collection indexes
+                await self.db.users.create_index("username", unique=True)
+                await self.db.users.create_index("role")
+                await self.db.users.create_index("created_at")
+                
+                # Minecraft accounts indexes
+                await self.db.minecraft_accounts.create_index("user_id")
+                await self.db.minecraft_accounts.create_index("account_type")
+                await self.db.minecraft_accounts.create_index("is_online")
+                await self.db.minecraft_accounts.create_index([("user_id", 1), ("account_type", 1)])
+                
+                # Chat messages indexes
+                await self.db.chat_messages.create_index("account_id")
+                await self.db.chat_messages.create_index("timestamp")
+                await self.db.chat_messages.create_index("is_outgoing")
+                await self.db.chat_messages.create_index([("account_id", 1), ("timestamp", -1)])
+                
+                # Server settings indexes
+                await self.db.server_settings.create_index("user_id", unique=True)
+                
+                # System logs indexes
+                await self.db.system_logs.create_index("timestamp")
+                await self.db.system_logs.create_index("level")
+                await self.db.system_logs.create_index("user_id")
+                
+                logger.info("📊 Database indexes created successfully")
+                
+            except Exception as e:
+                logger.error(f"❌ Error creating indexes: {e}")
+                # Don't fail if indexes already exist
+                pass
+        
+        async def ensure_admin_user(self):
+            """Ensure at least one admin user exists for first-time setup"""
+            try:
+                admin_count = await self.db.users.count_documents({"role": "admin"})
+                if admin_count == 0:
+                    logger.info("👑 No admin users found - ready for admin setup")
+                else:
+                    logger.info(f"👑 Found {admin_count} admin user(s)")
+                    
+            except Exception as e:
+                logger.error(f"❌ Error checking admin users: {e}")
+        
+        async def get_database_stats(self):
+            """Get database statistics for monitoring"""
+            try:
+                stats = {
+                    "database_name": self.db.name,
+                    "collections": {},
+                    "total_size": 0
+                }
+                
+                collections = await self.db.list_collection_names()
+                for collection_name in collections:
+                    collection = self.db[collection_name]
+                    count = await collection.count_documents({})
+                    stats["collections"][collection_name] = count
+                
+                return stats
+            except Exception as e:
+                logger.error(f"Error getting database stats: {e}")
+                return {"error": str(e)}
+    
+    # Initialize database manager
+    db_manager = DatabaseManager(db)
             
 except Exception as e:
-    logger.error(f"Database configuration error: {e}")
-    raise
+    logger.error(f"❌ Database configuration error: {e}")
+    # Don't raise here, let the app start and show a proper error message
+    client = None
+    db = None
+    db_manager = None
 
 # Create the main app without a prefix
 app = FastAPI()
