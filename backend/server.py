@@ -149,6 +149,11 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid authentication credentials")
 
+# Health Check
+@api_router.get("/health")
+async def health_check():
+    return {"status": "ok", "message": "Minecraft AFK Console API"}
+
 # Auth Routes
 @api_router.post("/auth/setup-admin", response_model=Token)
 async def setup_admin(user_data: UserCreate):
