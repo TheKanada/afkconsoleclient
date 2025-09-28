@@ -97,7 +97,51 @@ class MinecraftBot:
             logger.error(f"Error connecting to Minecraft server: {str(e)}")
             return False
     
-    # Connection loop removed - using simplified approach
+    def _connection_thread(self):
+        """Real Minecraft protocol connection thread"""
+        try:
+            # Register packet handlers
+            self.connection.register_packet_handler(
+                clientbound.play.JoinGamePacket, 
+                self._handle_join_game
+            )
+            self.connection.register_packet_handler(
+                clientbound.play.ChatMessagePacket,
+                self._handle_chat_message  
+            )
+            self.connection.register_packet_handler(
+                clientbound.play.DisconnectPacket,
+                self._handle_disconnect
+            )
+            self.connection.register_packet_handler(
+                clientbound.play.KeepAlivePacket,
+                self._handle_keep_alive
+            )
+            
+            # Connect to server
+            logger.info(f"Establishing Minecraft protocol connection...")
+            self.connection.connect()
+            
+            logger.info(f"Bot {self.account_info.get('nickname')} connected to Minecraft server")
+            self.is_connected = True
+            
+            # Keep connection alive
+            while self.is_running and self.connection.connected:
+                try:
+                    time.sleep(0.1)  # Small delay
+                except Exception as e:
+                    logger.error(f"Connection loop error: {e}")
+                    break
+                    
+        except ConnectionRefusedError:
+            logger.error(f"Connection refused - Server may be offline or port closed")
+            self.is_connected = False
+        except Exception as e:
+            logger.error(f"Minecraft connection error: {str(e)}")
+            self.is_connected = False
+        finally:
+            self.is_connected = False
+            asyncio.create_task(self._update_connection_status(False))
     
     # Simplified - no packet handlers needed for basic functionality
     
