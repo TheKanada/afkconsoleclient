@@ -160,3 +160,5 @@
 ## agent_communication:
     - agent: "main"
       message: "Starting fix for critical asyncio/threading conflicts. Main issues: asyncio.create_task() called from threads, duplicate _auto_reconnect methods, improper event loop coordination."
+    - agent: "main"
+      message: "Fixed asyncio/threading conflicts by: 1) Added _schedule_async method for thread-safe async ops, 2) Removed duplicate _auto_reconnect method, 3) Added proper event loop coordination, 4) Used asyncio.run_coroutine_threadsafe for cross-thread async calls. Backend starting without errors. Ready for comprehensive testing."
