@@ -447,12 +447,12 @@ async def setup_admin(user_data: UserCreate):
     if existing_admin:
         raise HTTPException(status_code=400, detail="Admin already exists")
     
-    # Create admin user
+    # Create admin user (always admin role for first setup)
     hashed_password = hash_password(user_data.password)
     user = User(
         username=user_data.username,
         password_hash=hashed_password,
-        role="admin"
+        role="admin"  # Force admin role for initial setup
     )
     
     await db.users.insert_one(user.dict())
