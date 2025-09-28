@@ -25,12 +25,24 @@ const ChatsPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchAccounts();
-    fetchChatMessages();
+    let isMounted = true;
+    
+    if (isMounted) {
+      fetchAccounts();
+      fetchChatMessages();
+    }
     
     // Refresh chat messages every 5 seconds
-    const interval = setInterval(fetchChatMessages, 5000);
-    return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      if (isMounted) {
+        fetchChatMessages();
+      }
+    }, 5000);
+    
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
