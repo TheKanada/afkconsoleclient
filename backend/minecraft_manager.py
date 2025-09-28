@@ -75,42 +75,7 @@ class MinecraftBot:
     
     # Connection loop removed - using simplified approach
     
-    def _handle_join_game(self, join_game_packet):
-        """Handle successful join to game"""
-        logger.info(f"Bot {self.account_info.get('nickname', self.account_info.get('email'))} joined the game")
-        self.is_connected = True
-        
-        # Update database
-        asyncio.create_task(self._update_connection_status(True))
-    
-    def _handle_chat_message(self, chat_packet):
-        """Handle incoming chat messages"""
-        try:
-            message = chat_packet.json_data
-            if isinstance(message, str):
-                message_text = message
-            else:
-                message_text = json.loads(message).get('text', str(message))
-            
-            logger.info(f"Chat message received: {message_text}")
-            
-            # Save to database
-            asyncio.create_task(self._save_chat_message(message_text, False))
-            
-        except Exception as e:
-            logger.error(f"Error handling chat message: {e}")
-    
-    def _handle_disconnect(self, disconnect_packet):
-        """Handle disconnection from server"""
-        logger.info(f"Bot {self.account_info.get('nickname', self.account_info.get('email'))} was disconnected")
-        self.is_connected = False
-        
-        # Update database
-        asyncio.create_task(self._update_connection_status(False))
-        
-        # Auto-reconnect if enabled
-        if self.server_settings.get('auto_connect_enabled') and self.is_running:
-            threading.Thread(target=self._auto_reconnect, daemon=True).start()
+    # Simplified - no packet handlers needed for basic functionality
     
     def _anti_afk_loop(self):
         """Anti-AFK loop - jump every 60 seconds"""
