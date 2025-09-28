@@ -318,8 +318,8 @@ class MinecraftBot:
                 
                 self.connection.write_packet(chat_pkt)
                 
-                # Save outgoing message to database
-                asyncio.create_task(self._save_chat_message(message, True))
+                # Save outgoing message to database - schedule on main event loop
+                self._schedule_async(self._save_chat_message(message, True))
                 
                 logger.info(f"REAL message sent from {self.account_info.get('nickname')}: {message}")
                 return True
