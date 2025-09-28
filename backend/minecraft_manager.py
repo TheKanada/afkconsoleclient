@@ -76,23 +76,11 @@ class MinecraftBot:
     def _connection_loop(self):
         """Main connection loop running in separate thread"""
         try:
-            # Register packet handlers
-            self.connection.register_packet_handler(
-                clientbound.play.JoinGamePacket, 
-                self._handle_join_game
-            )
-            self.connection.register_packet_handler(
-                clientbound.play.ChatMessagePacket,
-                self._handle_chat_message
-            )
-            self.connection.register_packet_handler(
-                clientbound.play.DisconnectPacket,
-                self._handle_disconnect
-            )
-            
             # Connect to server
             self.connection.connect()
             self.is_connected = True
+            
+            logger.info(f"Bot {self.account_info.get('nickname', self.account_info.get('email'))} connected successfully")
             
             # Start anti-AFK if enabled
             if self.server_settings.get('anti_afk_enabled'):
