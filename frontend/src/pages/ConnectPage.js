@@ -248,20 +248,6 @@ const ConnectPage = () => {
         </div>
       </div>
 
-      {/* Simulation Notice */}
-      <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4 mb-6">
-        <div className="flex items-start gap-3">
-          <div className="text-blue-400 mt-0.5">ℹ️</div>
-          <div>
-            <h3 className="text-blue-400 font-semibold">Development Mode</h3>
-            <p className="text-blue-200 text-sm mt-1">
-              Server connections are currently simulated for development purposes. 
-              Real Minecraft protocol integration will be implemented in future versions.
-            </p>
-          </div>
-        </div>
-      </div>
-
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Server Information */}
         <div className="lg:col-span-2 space-y-6">
