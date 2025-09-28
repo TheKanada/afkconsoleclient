@@ -260,6 +260,22 @@ const Dashboard = () => {
         </Card>
       )}
 
+      {/* Simulation Notice for Admin/Moderator */}
+      {(user?.role === "admin" || user?.role === "moderator") && (
+        <div className="bg-purple-500/20 border border-purple-500/30 rounded-lg p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <div className="text-purple-400 mt-0.5">🔧</div>
+            <div>
+              <h3 className="text-purple-400 font-semibold">Development Environment</h3>
+              <p className="text-purple-200 text-sm mt-1">
+                This is a development/demo version. Minecraft server connections are simulated. 
+                Statistics show simulated data for demonstration purposes.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Real-time Stats Cards */}
       {(user?.role === "admin" || user?.role === "moderator") && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
