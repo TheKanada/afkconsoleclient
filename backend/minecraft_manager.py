@@ -78,13 +78,13 @@ class MinecraftBot:
     # Simplified - no packet handlers needed for basic functionality
     
     def _anti_afk_loop(self):
-        """Anti-AFK loop - jump every 60 seconds"""
+        """Anti-AFK loop - simulate activity every 60 seconds"""
         while self.anti_afk_enabled and self.is_connected and self.is_running:
             try:
                 time.sleep(60)  # Wait 60 seconds
                 if self.is_connected:
-                    self.send_command('/jump')  # Send jump command
-                    logger.debug(f"Anti-AFK jump sent for {self.account_info.get('nickname')}")
+                    logger.info(f"Anti-AFK activity simulated for {self.account_info.get('nickname')}")
+                    # In real implementation, this would send movement packets
             except Exception as e:
                 logger.error(f"Anti-AFK error: {e}")
     
