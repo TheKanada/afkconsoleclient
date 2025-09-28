@@ -183,6 +183,42 @@
           agent: "testing"
           comment: "Health endpoint, dashboard stats, server settings, chat endpoints all working correctly. 17/18 tests passed (94.4% success rate)."
 
+  - task: "Account deletion functionality"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Added @api_router.delete('/accounts/{account_id}') route to existing delete function"
+
+  - task: "Spam messages functionality"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Added /api/chats/spam endpoint with timed intervals, background task execution, proper validation"
+
+  - task: "Login Message and World Change Messages"
+    implemented: true
+    working: true
+    file: "/app/backend/minecraft_manager.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Login messages already implemented, added world change message functionality with RespawnPacket handler"
+
 ## frontend:
   - task: "Remove simulation warnings from UI"
     implemented: true
