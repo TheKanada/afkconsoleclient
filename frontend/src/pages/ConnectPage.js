@@ -132,9 +132,16 @@ const ConnectPage = () => {
     setConnectionStatus("connecting");
 
     try {
-      await axios.post(`${API}/server/disconnect`);
+      const response = await axios.post(`${API}/server/disconnect`);
       setConnectionStatus("disconnected");
-      toast.success("Disconnected from server");
+      
+      if (response.data.simulation) {
+        toast.success("Disconnection simulated", {
+          description: "Note: This was a simulation disconnection"
+        });
+      } else {
+        toast.success("Disconnected from server");
+      }
     } catch (error) {
       console.error("Error disconnecting from server:", error);
       toast.error("Failed to disconnect from server");
