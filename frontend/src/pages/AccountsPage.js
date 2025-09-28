@@ -20,7 +20,9 @@ const AccountsPage = () => {
   const [newAccount, setNewAccount] = useState({
     account_type: "",
     email: "",
-    nickname: ""
+    nickname: "",
+    password: "",
+    login_enabled: false
   });
   const [loading, setLoading] = useState(false);
 
