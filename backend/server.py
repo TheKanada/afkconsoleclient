@@ -19,6 +19,13 @@ import json
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Configure logging first
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 # MongoDB connection with comprehensive setup
 try:
     mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
