@@ -788,12 +788,7 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# Logging already configured above
 
 @app.on_event("startup")
 async def startup_database():
