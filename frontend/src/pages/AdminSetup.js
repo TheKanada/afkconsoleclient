@@ -67,10 +67,21 @@ const AdminSetup = ({ setAdminExists }) => {
       login(response.data.access_token, response.data.user);
       setAdminExists(true);
       navigate("/");
-      toast.success("Admin account created successfully!");
+      toast.success("Admin account created successfully! Database initialized.");
     } catch (error) {
       console.error("Admin setup error:", error);
-      toast.error(error.response?.data?.detail || "Failed to create admin account");
+      
+      if (error.response?.status === 503) {
+        toast.error("Database connection failed", {
+          description: "Please ensure MongoDB is running and properly configured"
+        });
+      } else if (error.response?.data?.detail?.includes("Database")) {
+        toast.error("Database setup error", {
+          description: error.response.data.detail
+        });
+      } else {
+        toast.error(error.response?.data?.detail || "Failed to create admin account");
+      }
     } finally {
       setLoading(false);
     }
