@@ -593,42 +593,37 @@ async def connect_account(account_id: str, current_user: User = Depends(get_curr
     if not server_settings or not server_settings.get("server_ip"):
         raise HTTPException(status_code=400, detail="Server IP not configured. Please set up server connection first.")
     
-    # TODO: Implement actual Minecraft protocol connection
-    # For now, this is a SIMULATION - the account is not actually connected to any Minecraft server
-    # Real implementation would use minecraft-protocol library or similar
-    
-    # Update account status to online (SIMULATION)
-    await db.minecraft_accounts.update_one(
-        {"id": account_id}, 
-        {"$set": {
-            "is_online": True, 
-            "last_seen": datetime.now(timezone.utc),
-            "connection_status": "simulated"  # Mark as simulated connection
-        }}
-    )
-    
-    # Log the simulated connection
-    await manager.log_system_event(
-        "info", 
-        f"SIMULATION: Account {account.get('email') or account.get('nickname')} marked as connected to {server_settings.get('server_ip')}",
-        current_user.id,
-        "account_connect_simulation"
-    )
-    
-    # Broadcast real-time update
-    await manager.broadcast_message({
-        "type": "account_connected",
-        "account_id": account_id,
-        "account_name": account.get("email") or account.get("nickname"),
-        "simulation": True,
-        "server_ip": server_settings.get("server_ip")
-    })
-    
-    return {
-        "message": f"Account connection simulated for server {server_settings.get('server_ip')}",
-        "simulation": True,
-        "note": "This is a simulation. Real Minecraft server connection is not implemented yet."
-    }
+    # Connect to actual Minecraft server
+    try:
+        success = await minecraft_manager.connect_account(account, server_settings)
+        
+        if success:
+            # Log successful connection
+            await manager.log_system_event(
+                "info", 
+                f"Account {account.get('email') or account.get('nickname')} connected to {server_settings.get('server_ip')}",
+                current_user.id,
+                "account_connect"
+            )
+            
+            # Broadcast real-time update
+            await manager.broadcast_message({
+                "type": "account_connected",
+                "account_id": account_id,
+                "account_name": account.get("email") or account.get("nickname"),
+                "server_ip": server_settings.get("server_ip")
+            })
+            
+            return {
+                "message": f"Account successfully connected to {server_settings.get('server_ip')}",
+                "success": True
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to connect to Minecraft server. Check server IP and account credentials.")
+            
+    except Exception as e:
+        logger.error(f"Error connecting account {account_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Connection failed: {str(e)}")
 
 @api_router.post("/accounts/{account_id}/disconnect")
 async def disconnect_account(account_id: str, current_user: User = Depends(get_current_user)):
