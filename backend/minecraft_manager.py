@@ -175,7 +175,7 @@ class MinecraftBot:
         logger.warning(f"Bot {self.account_info.get('nickname')} was disconnected: {reason}")
         
         self.is_connected = False
-        asyncio.create_task(self._update_connection_status(False))
+        self._schedule_async(self._update_connection_status(False))
         
         # Auto-reconnect if enabled
         if self.server_settings.get('auto_connect_enabled') and self.is_running:
