@@ -42,6 +42,10 @@ function App() {
     } catch (error) {
       console.error('Error checking admin status:', error);
       toast.error('Failed to check admin status');
+      // If we can't check admin status, assume no admin exists
+      setAdminExists(false);
+    } finally {
+      setLoading(false);
     }
   };
 
