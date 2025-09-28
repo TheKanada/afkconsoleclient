@@ -210,6 +210,55 @@ const Dashboard = () => {
         </Card>
       )}
 
+      {/* Database Health Check (Admin Only) */}
+      {user?.role === "admin" && (
+        <Card className="bg-gray-800 border-gray-700 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Activity className="w-5 h-5" />
+                Database Status
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={fetchDatabaseStats}
+                className="text-gray-400 hover:text-white"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {databaseStats ? (
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-400">Database: {databaseStats.database_name}</p>
+                  <p className="text-sm text-gray-400">Collections:</p>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    {Object.entries(databaseStats.collections || {}).map(([name, count]) => (
+                      <div key={name} className="flex justify-between text-xs">
+                        <span className="text-gray-300">{name}:</span>
+                        <span className="text-green-400">{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-400">✅</div>
+                  <p className="text-sm text-green-400">Database Healthy</p>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <div className="text-2xl font-bold text-yellow-400">⚠️</div>
+                <p className="text-sm text-yellow-400">Loading database stats...</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Real-time Stats Cards */}
       {(user?.role === "admin" || user?.role === "moderator") && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
