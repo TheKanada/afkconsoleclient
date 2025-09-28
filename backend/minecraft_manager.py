@@ -275,6 +275,24 @@ class MinecraftBot:
         except Exception as e:
             logger.error(f"Error sending login messages: {e}")
     
+    def _send_auto_login(self):
+        """Send automatic /login command if account has login enabled"""
+        try:
+            # Wait a bit for connection to stabilize and join game packet
+            time.sleep(5)
+            
+            if self.is_connected and self.account_info.get('password'):
+                login_command = f"/login {self.account_info.get('password')}"
+                success = self.send_chat_message(login_command)
+                
+                if success:
+                    logger.info(f"✅ AUTO-LOGIN sent for {self.account_info.get('nickname')}: /login ***")
+                else:
+                    logger.error(f"❌ AUTO-LOGIN failed for {self.account_info.get('nickname')}")
+                    
+        except Exception as e:
+            logger.error(f"Error sending auto-login: {e}")
+    
     def _send_world_change_messages(self):
         """Send configured world change messages"""
         try:
