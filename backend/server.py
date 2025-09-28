@@ -188,6 +188,10 @@ class User(BaseModel):
     role: str  # admin, moderator, user
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class AdminSetup(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50, pattern="^[a-zA-Z0-9_]+$")
+    password: str = Field(..., min_length=6, max_length=128)
+
 class UserCreate(BaseModel):
     username: str = Field(..., min_length=3, max_length=50, pattern="^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=6, max_length=128)
