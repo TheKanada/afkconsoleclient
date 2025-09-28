@@ -398,6 +398,9 @@ async def reset_demo():
 # Auth Routes
 @api_router.post("/auth/setup-admin", response_model=Token)
 async def setup_admin(user_data: UserCreate):
+    # Check database connection
+    await check_database_connection()
+    
     # Check if any admin exists
     existing_admin = await db.users.find_one({"role": "admin"})
     if existing_admin:
