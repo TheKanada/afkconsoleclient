@@ -216,6 +216,8 @@ class MinecraftAccount(BaseModel):
     account_type: str  # microsoft or cracked
     email: Optional[str] = None
     nickname: Optional[str] = None
+    password: Optional[str] = None  # Password for both cracked and microsoft accounts
+    login_enabled: bool = False  # If server has login system, send /login {password} command
     is_online: bool = False
     last_seen: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -224,6 +226,8 @@ class MinecraftAccountCreate(BaseModel):
     account_type: str
     email: Optional[str] = None
     nickname: Optional[str] = None
+    password: Optional[str] = None  # Password for account
+    login_enabled: bool = False  # Enable automatic /login command
 
 class ChatMessage(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
