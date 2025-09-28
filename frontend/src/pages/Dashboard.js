@@ -82,6 +82,7 @@ const Dashboard = () => {
         fetchDashboardStats();
         if (user.role === "admin") {
           fetchUsers();
+          fetchDatabaseStats();
         }
       }
       
