@@ -1,22 +1,43 @@
 {
   "test_focus": "asyncio_threading_fixes_and_minecraft_connections",
   "summary": {
-    "total_tests": 1,
-    "passed_tests": 0,
+    "total_tests": 4,
+    "passed_tests": 3,
     "critical_failures": 1,
-    "success_rate": 0.0,
-    "timestamp": "2025-09-28T14:50:09.681780"
+    "success_rate": 0.75,
+    "timestamp": "2025-09-28T14:50:31.894719"
   },
   "critical_failures": [
-    "Backend Health Check: Backend not responding: {'text': 'Invalid host header'}"
+    "Admin Login: Cannot login with test credentials: {'detail': 'Incorrect username or password'}"
   ],
   "detailed_results": [
     {
       "test": "Backend Health Check",
+      "success": true,
+      "details": "Backend running, database connected",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:31.657403"
+    },
+    {
+      "test": "MinecraftManager Import",
+      "success": true,
+      "details": "Unexpected but non-error response: 403",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:31.695386"
+    },
+    {
+      "test": "Check Admin Endpoint",
+      "success": true,
+      "details": "Admin exists: True",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:31.737260"
+    },
+    {
+      "test": "Admin Login",
       "success": false,
-      "details": "Backend not responding: {'text': 'Invalid host header'}",
+      "details": "Cannot login with test credentials: {'detail': 'Incorrect username or password'}",
       "critical": true,
-      "timestamp": "2025-09-28T14:50:09.681475"
+      "timestamp": "2025-09-28T14:50:31.894413"
     }
   ]
 }
