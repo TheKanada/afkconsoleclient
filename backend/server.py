@@ -442,7 +442,7 @@ async def reset_demo():
 
 # Auth Routes
 @api_router.post("/auth/setup-admin", response_model=Token)
-async def setup_admin(user_data: UserCreate):
+async def setup_admin(user_data: AdminSetup):
     # Check database connection
     await check_database_connection()
     
