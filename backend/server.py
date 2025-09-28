@@ -791,7 +791,7 @@ async def disconnect_account(account_id: str, current_user: User = Depends(get_c
     
     # Disconnect from actual Minecraft server
     try:
-        success = await minecraft_manager.disconnect_account(account_id)
+        await minecraft_manager.disconnect_account(account_id)
         
         # Log disconnection
         await manager.log_system_event(
