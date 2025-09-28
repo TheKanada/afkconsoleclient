@@ -52,6 +52,11 @@ const AccountsPage = () => {
       toast.error("Nickname is required for cracked accounts");
       return;
     }
+    
+    if (!newAccount.password) {
+      toast.error("Password is required for all accounts");
+      return;
+    }
 
     setLoading(true);
 
@@ -59,11 +64,13 @@ const AccountsPage = () => {
       await axios.post(`${API}/accounts`, {
         account_type: newAccount.account_type,
         email: newAccount.account_type === "microsoft" ? newAccount.email : null,
-        nickname: newAccount.account_type === "cracked" ? newAccount.nickname : null
+        nickname: newAccount.account_type === "cracked" ? newAccount.nickname : null,
+        password: newAccount.password,
+        login_enabled: newAccount.login_enabled
       });
       
       toast.success("Account added successfully");
-      setNewAccount({ account_type: "", email: "", nickname: "" });
+      setNewAccount({ account_type: "", email: "", nickname: "", password: "", login_enabled: false });
       setShowAddDialog(false);
       fetchAccounts();
     } catch (error) {
