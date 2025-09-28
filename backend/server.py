@@ -31,7 +31,6 @@ api_router = APIRouter(prefix="/api")
 
 # Security
 security = HTTPBearer()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
 SECRET_KEY = "minecraft-afk-client-secret-key-2024"
 ALGORITHM = "HS256"
 
