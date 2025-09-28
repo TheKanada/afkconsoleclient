@@ -1,34 +1,263 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+body {
+  font-family: 'Source Code Pro', monospace;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  line-height: 1.5;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
 }
 
-.App-link {
-    color: #61dafb;
+/* Terminal/Console styling */
+.terminal {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: 'Source Code Pro', monospace;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red {
+  background-color: #ff5f56;
+}
+
+.terminal-dot.yellow {
+  background-color: #ffbd2e;
+}
+
+.terminal-dot.green {
+  background-color: #27ca3f;
+}
+
+/* Minecraft-themed colors */
+.mc-green {
+  color: #55ff55;
+}
+
+.mc-red {
+  color: #ff5555;
+}
+
+.mc-yellow {
+  color: #ffff55;
+}
+
+.mc-aqua {
+  color: #55ffff;
+}
+
+.mc-gray {
+  color: #aaaaaa;
+}
+
+.mc-gold {
+  color: #ffaa00;
+}
+
+/* Status indicators */
+.status-online {
+  color: #55ff55;
+}
+
+.status-offline {
+  color: #ff5555;
+}
+
+.status-connecting {
+  color: #ffff55;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161b22;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* Form styling */
+.form-container {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button hover effects */
+.btn-minecraft {
+  background: linear-gradient(45deg, #2d5016, #4f8b2b);
+  border: 2px solid #4f8b2b;
+  color: white;
+  transition: all 0.2s ease;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.btn-minecraft:hover {
+  background: linear-gradient(45deg, #4f8b2b, #6ba83a);
+  border-color: #6ba83a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 139, 43, 0.3);
+}
+
+.btn-danger {
+  background: linear-gradient(45deg, #8b2635, #c73650);
+  border: 2px solid #c73650;
+  color: white;
+  transition: all 0.2s ease;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.btn-danger:hover {
+  background: linear-gradient(45deg, #c73650, #e74c3c);
+  border-color: #e74c3c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(199, 54, 80, 0.3);
+}
+
+/* Glow effects for status */
+.glow-green {
+  box-shadow: 0 0 10px rgba(85, 255, 85, 0.3);
+}
+
+.glow-red {
+  box-shadow: 0 0 10px rgba(255, 85, 85, 0.3);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 10px rgba(255, 255, 85, 0.3);
+}
+
+/* Chat message styling */
+.chat-message {
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+  border-radius: 4px;
+  background: rgba(48, 54, 61, 0.3);
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.chat-message.incoming {
+  border-left-color: #55ff55;
+}
+
+.chat-message.outgoing {
+  border-left-color: #ffaa00;
+  background: rgba(255, 170, 0, 0.1);
+}
+
+.chat-message:hover {
+  background: rgba(48, 54, 61, 0.5);
+}
+
+/* Connection status */
+.connection-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.connection-indicator.online {
+  background: rgba(85, 255, 85, 0.15);
+  color: #55ff55;
+  border: 1px solid rgba(85, 255, 85, 0.3);
+}
+
+.connection-indicator.offline {
+  background: rgba(255, 85, 85, 0.15);
+  color: #ff5555;
+  border: 1px solid rgba(255, 85, 85, 0.3);
+}
+
+.connection-indicator.connecting {
+  background: rgba(255, 255, 85, 0.15);
+  color: #ffff55;
+  border: 1px solid rgba(255, 255, 85, 0.3);
+}
+
+/* Pulse animation for connecting status */
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
