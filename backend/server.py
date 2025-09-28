@@ -239,7 +239,7 @@ async def get_users(current_user: User = Depends(get_current_user)):
     if current_user.role not in ["admin", "moderator"]:
         raise HTTPException(status_code=403, detail="Insufficient permissions")
     
-    users = await db.users.find({}, {"password_hash": 0}).to_list(1000)
+    users = await db.users.find({}, {"password_hash": 0, "_id": 0}).to_list(1000)
     return users
 
 # Minecraft Account Routes
