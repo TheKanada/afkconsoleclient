@@ -6,6 +6,7 @@ import json
 import threading
 import time
 import uuid
+import concurrent.futures
 
 # Minecraft protocol imports
 from minecraft.networking.connection import Connection
