@@ -246,7 +246,7 @@ class MinecraftBot:
             logger.error(f"Error sending login messages: {e}")
     
     def _auto_reconnect(self):
-        """Auto-reconnect logic with proper retry mechanism"""
+        """Auto-reconnect logic with proper thread-safe async coordination"""
         for attempt in range(3):
             logger.info(f"Auto-reconnect attempt {attempt + 1}/3 for {self.account_info.get('nickname')}")
             time.sleep(300)  # Wait 5 minutes
@@ -255,7 +255,9 @@ class MinecraftBot:
                 return
             
             try:
-                if asyncio.run(self.connect()):
+                # Schedule connection on main event loop and wait for result
+                future = asyncio.run_coroutine_threadsafe(self.connect(), self.loop)
+                if future.result(timeout=60):  # Wait up to 60 seconds for connection
                     logger.info(f"Auto-reconnect successful for {self.account_info.get('nickname')}")
                     return
             except Exception as e:
@@ -267,23 +269,10 @@ class MinecraftBot:
         
         if self.is_running:
             try:
-                asyncio.run(self.connect())
+                future = asyncio.run_coroutine_threadsafe(self.connect(), self.loop)
+                future.result(timeout=60)
             except Exception as e:
                 logger.error(f"Final reconnect attempt failed: {e}")
-    
-    def _auto_reconnect(self):
-        """Auto-reconnect logic"""
-        for attempt in range(3):
-            logger.info(f"Auto-reconnect attempt {attempt + 1}/3")
-            time.sleep(300)  # Wait 5 minutes
-            
-            if asyncio.run(self.connect()):
-                return
-        
-        # If all attempts failed, wait 1 hour and try once more
-        logger.info("All reconnect attempts failed, waiting 1 hour...")
-        time.sleep(3600)
-        asyncio.run(self.connect())
     
     async def _update_connection_status(self, is_online: bool):
         """Update account connection status in database"""
