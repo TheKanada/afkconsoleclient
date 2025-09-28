@@ -25,7 +25,16 @@ import axios from "axios";
 
 const Dashboard = () => {
   const { user, API } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState({
+    active_accounts: 0,
+    total_accounts: 0,
+    server_status: "offline",
+    messages_today: 0,
+    online_accounts: [],
+    recent_activity: []
+  });
   const [newUser, setNewUser] = useState({
     username: "",
     password: "",
@@ -33,12 +42,36 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(false);
   const [showCreateUser, setShowCreateUser] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+
+  // Real-time updates
+  const fetchDashboardStats = useCallback(async () => {
+    if (user?.role === "admin" || user?.role === "moderator") {
+      try {
+        const response = await axios.get(`${API}/dashboard/stats`);
+        setDashboardStats(response.data);
+        setLastUpdated(new Date());
+      } catch (error) {
+        console.error("Error fetching dashboard stats:", error);
+      }
+    }
+  }, [API, user?.role]);
 
   useEffect(() => {
     if (user?.role === "admin" || user?.role === "moderator") {
-      fetchUsers();
+      fetchDashboardStats();
+      if (user.role === "admin") {
+        fetchUsers();
+      }
+      
+      // Set up real-time updates every 5 seconds
+      const interval = setInterval(() => {
+        fetchDashboardStats();
+      }, 5000);
+      
+      return () => clearInterval(interval);
     }
-  }, [user]);
+  }, [user, fetchDashboardStats]);
 
   const fetchUsers = async () => {
     try {
