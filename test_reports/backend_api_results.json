@@ -1,28 +1,184 @@
 {
   "summary": {
-    "total_tests": 3,
-    "passed_tests": 2,
-    "success_rate": 0.6666666666666666,
-    "timestamp": "2025-09-28T14:59:32.756242"
+    "total_tests": 29,
+    "passed_tests": 27,
+    "success_rate": 0.9310344827586207,
+    "timestamp": "2025-09-28T14:59:51.758595"
   },
   "results": [
     {
       "test": "Health Check",
       "success": true,
       "details": "Status: 200",
-      "timestamp": "2025-09-28T14:59:32.606839"
+      "timestamp": "2025-09-28T14:59:43.304704"
     },
     {
       "test": "Check Admin Exists",
       "success": true,
       "details": "Status: 200",
-      "timestamp": "2025-09-28T14:59:32.670109"
+      "timestamp": "2025-09-28T14:59:43.344245"
     },
     {
-      "test": "User Login",
+      "test": "Setup Admin",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:43.657584"
+    },
+    {
+      "test": "Create User",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:43.946167"
+    },
+    {
+      "test": "Get Users",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:43.995530"
+    },
+    {
+      "test": "Create Minecraft Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.068588"
+    },
+    {
+      "test": "Create Minecraft Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.104567"
+    },
+    {
+      "test": "Get Minecraft Accounts",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.153347"
+    },
+    {
+      "test": "Get Server Settings",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.197149"
+    },
+    {
+      "test": "Update Server Settings",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.235929"
+    },
+    {
+      "test": "Connect to Server",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.284601"
+    },
+    {
+      "test": "Disconnect from Server",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.321243"
+    },
+    {
+      "test": "Create Minecraft Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.359837"
+    },
+    {
+      "test": "Get Accounts for Deletion Test",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.393370"
+    },
+    {
+      "test": "Delete Account - Valid ID",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.430907"
+    },
+    {
+      "test": "Delete Account - Invalid ID",
+      "success": true,
+      "details": "Status: 404",
+      "timestamp": "2025-09-28T14:59:44.469847"
+    },
+    {
+      "test": "Delete Account - No Auth",
       "success": false,
-      "details": "Expected 200, got 401: {'detail': 'Incorrect username or password'}",
-      "timestamp": "2025-09-28T14:59:32.755340"
+      "details": "Expected 401, got 403: {'detail': 'Not authenticated'}",
+      "timestamp": "2025-09-28T14:59:44.507539"
+    },
+    {
+      "test": "Create Minecraft Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.585189"
+    },
+    {
+      "test": "Create Minecraft Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.621511"
+    },
+    {
+      "test": "Get Accounts for Spam Test",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.657589"
+    },
+    {
+      "test": "Spam Messages - Valid Request",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:44.694463"
+    },
+    {
+      "test": "Spam Messages - Invalid Interval Low",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2025-09-28T14:59:51.492929"
+    },
+    {
+      "test": "Spam Messages - Invalid Interval High",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2025-09-28T14:59:51.548141"
+    },
+    {
+      "test": "Spam Messages - Empty Message",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2025-09-28T14:59:51.584225"
+    },
+    {
+      "test": "Spam Messages - No Account IDs",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2025-09-28T14:59:51.620782"
+    },
+    {
+      "test": "Spam Messages - No Auth",
+      "success": false,
+      "details": "Expected 401, got 403: {'detail': 'Not authenticated'}",
+      "timestamp": "2025-09-28T14:59:51.652187"
+    },
+    {
+      "test": "Login Messages - Update Settings",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:51.689216"
+    },
+    {
+      "test": "Login Messages - Get Settings",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:51.724856"
+    },
+    {
+      "test": "Login Messages - Disable Features",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T14:59:51.757819"
     }
   ]
 }
