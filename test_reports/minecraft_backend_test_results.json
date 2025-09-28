@@ -1,0 +1,22 @@
+{
+  "test_focus": "asyncio_threading_fixes_and_minecraft_connections",
+  "summary": {
+    "total_tests": 1,
+    "passed_tests": 0,
+    "critical_failures": 1,
+    "success_rate": 0.0,
+    "timestamp": "2025-09-28T14:49:52.727058"
+  },
+  "critical_failures": [
+    "Backend Health Check: Backend not responding: {'text': 'Invalid host header'}"
+  ],
+  "detailed_results": [
+    {
+      "test": "Backend Health Check",
+      "success": false,
+      "details": "Backend not responding: {'text': 'Invalid host header'}",
+      "critical": true,
+      "timestamp": "2025-09-28T14:49:52.726779"
+    }
+  ]
+}
