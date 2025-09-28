@@ -162,6 +162,9 @@ try:
     
     # Initialize database manager
     db_manager = DatabaseManager(db)
+    
+    # Initialize Minecraft manager
+    minecraft_manager = MinecraftManager(db_manager)
             
 except Exception as e:
     logger.error(f"❌ Database configuration error: {e}")
