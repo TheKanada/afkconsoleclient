@@ -249,6 +249,20 @@ const AccountsPage = () => {
         </Dialog>
       </div>
 
+      {/* Simulation Notice */}
+      <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4 mb-6">
+        <div className="flex items-start gap-3">
+          <div className="text-yellow-400 mt-0.5">⚠️</div>
+          <div>
+            <h3 className="text-yellow-400 font-semibold">Simulation Mode</h3>
+            <p className="text-yellow-200 text-sm mt-1">
+              Account connections are currently simulated. Real Minecraft server integration is not implemented yet. 
+              Accounts will appear as "connected" but are not actually joined to any Minecraft server.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Accounts List */}
       <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
