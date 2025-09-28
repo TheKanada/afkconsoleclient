@@ -141,48 +141,78 @@ const Dashboard = () => {
         </Badge>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gray-800 border-gray-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">Active Accounts</p>
-                <p className="text-2xl font-bold text-green-400">0</p>
+      {/* Real-time Stats Cards */}
+      {(user?.role === "admin" || user?.role === "moderator") && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm">Active Accounts</p>
+                  <p className="text-2xl font-bold text-green-400">{dashboardStats.active_accounts}</p>
+                  <p className="text-xs text-gray-500">of {dashboardStats.total_accounts} total</p>
+                </div>
+                <Users className="w-8 h-8 text-green-400" />
               </div>
-              <Users className="w-8 h-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">Server Status</p>
-                <p className="text-2xl font-bold text-red-400">Offline</p>
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm">Server Status</p>
+                  <p className={`text-2xl font-bold ${
+                    dashboardStats.server_status === "online" ? "text-green-400" : "text-red-400"
+                  }`}>
+                    {dashboardStats.server_status === "online" ? "Online" : "Offline"}
+                  </p>
+                </div>
+                {dashboardStats.server_status === "online" ? (
+                  <Wifi className="w-8 h-8 text-green-400" />
+                ) : (
+                  <WifiOff className="w-8 h-8 text-red-400" />
+                )}
               </div>
-              <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">Messages Today</p>
-                <p className="text-2xl font-bold text-yellow-400">0</p>
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm">Messages Today</p>
+                  <p className="text-2xl font-bold text-yellow-400">{dashboardStats.messages_today}</p>
+                </div>
+                <MessageSquare className="w-8 h-8 text-yellow-400" />
               </div>
-              <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-black text-sm font-bold">
-                M
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm">Last Updated</p>
+                  <p className="text-sm font-bold text-blue-400">
+                    {lastUpdated.toLocaleTimeString()}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={fetchDashboardStats}
+                    className="mt-1 p-0 h-auto text-xs text-gray-400 hover:text-white"
+                  >
+                    <RefreshCw className="w-3 h-3 mr-1" />
+                    Refresh
+                  </Button>
+                </div>
+                <Activity className="w-8 h-8 text-blue-400" />
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* User Management (Admin/Moderator only) */}
       {(user?.role === "admin" || user?.role === "moderator") && (
