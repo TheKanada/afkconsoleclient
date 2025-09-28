@@ -101,3 +101,62 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## user_problem_statement: "Minecraft AFK Console Client web application that currently has simulated Minecraft operations, but needs real Minecraft protocol integration using pyCraft library. The main issue is asyncio/threading conflicts preventing actual server connections."
+
+## backend:
+  - task: "Fix asyncio and threading conflicts in minecraft_manager.py"
+    implemented: false
+    working: false
+    file: "/app/backend/minecraft_manager.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Multiple asyncio.create_task() calls from non-async thread contexts, duplicate methods, threading/async coordination issues identified"
+
+  - task: "Real Minecraft protocol integration using pyCraft"
+    implemented: true
+    working: false
+    file: "/app/backend/minecraft_manager.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "pyCraft integration exists but fails due to asyncio/threading conflicts"
+
+## frontend:
+  - task: "Remove simulation warnings from UI"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/*"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Simulation warnings removed from frontend components"
+
+## metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+## test_plan:
+  current_focus:
+    - "Fix asyncio and threading conflicts in minecraft_manager.py"
+    - "Test real Minecraft connections"
+  stuck_tasks:
+    - "Real Minecraft protocol integration using pyCraft"
+  test_all: false
+  test_priority: "high_first"
+
+## agent_communication:
+    - agent: "main"
+      message: "Starting fix for critical asyncio/threading conflicts. Main issues: asyncio.create_task() called from threads, duplicate _auto_reconnect methods, improper event loop coordination."
