@@ -147,7 +147,9 @@ const AccountsPage = () => {
       id: account.id,
       account_type: account.account_type,
       email: account.email || "",
-      nickname: account.nickname || ""
+      nickname: account.nickname || "",
+      password: account.password || "",
+      login_enabled: account.login_enabled || false
     });
     setShowEditDialog(true);
   };
