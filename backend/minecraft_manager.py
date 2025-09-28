@@ -163,8 +163,8 @@ class MinecraftBot:
             
             logger.info(f"Chat received: {message_text}")
             
-            # Save to database
-            asyncio.create_task(self._save_chat_message(str(message_text), False))
+            # Save to database - schedule coroutine on main event loop
+            self._schedule_async(self._save_chat_message(str(message_text), False))
             
         except Exception as e:
             logger.error(f"Error handling chat message: {e}")
