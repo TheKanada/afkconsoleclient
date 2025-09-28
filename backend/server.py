@@ -277,12 +277,12 @@ async def delete_minecraft_account(account_id: str, current_user: User = Depends
 @api_router.get("/chats", response_model=List[dict])
 async def get_chat_messages(current_user: User = Depends(get_current_user)):
     # Get user's accounts
-    accounts = await db.minecraft_accounts.find({"user_id": current_user.id}).to_list(1000)
+    accounts = await db.minecraft_accounts.find({"user_id": current_user.id}, {"_id": 0}).to_list(1000)
     account_ids = [account["id"] for account in accounts]
     
     # Get recent chat messages
     messages = await db.chat_messages.find(
-        {"account_id": {"$in": account_ids}}
+        {"account_id": {"$in": account_ids}}, {"_id": 0}
     ).sort("timestamp", -1).limit(100).to_list(100)
     
     return messages
