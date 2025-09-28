@@ -1,82 +1,22 @@
 {
   "summary": {
-    "total_tests": 12,
-    "passed_tests": 12,
-    "success_rate": 1.0,
-    "timestamp": "2025-09-28T10:44:12.207173"
+    "total_tests": 2,
+    "passed_tests": 0,
+    "success_rate": 0.0,
+    "timestamp": "2025-09-28T14:59:04.231090"
   },
   "results": [
     {
       "test": "Health Check",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.207825"
+      "success": false,
+      "details": "Expected 200, got 400: Invalid host header",
+      "timestamp": "2025-09-28T14:59:04.193521"
     },
     {
       "test": "Check Admin Exists",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.249322"
-    },
-    {
-      "test": "Setup Admin",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.520475"
-    },
-    {
-      "test": "Create User",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.788186"
-    },
-    {
-      "test": "Get Users",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.826632"
-    },
-    {
-      "test": "Create Minecraft Account",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.862540"
-    },
-    {
-      "test": "Create Minecraft Account",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.939339"
-    },
-    {
-      "test": "Get Minecraft Accounts",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:11.974933"
-    },
-    {
-      "test": "Get Server Settings",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:12.052803"
-    },
-    {
-      "test": "Update Server Settings",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:12.132598"
-    },
-    {
-      "test": "Connect to Server",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:12.173408"
-    },
-    {
-      "test": "Disconnect from Server",
-      "success": true,
-      "details": "Status: 200",
-      "timestamp": "2025-09-28T10:44:12.206273"
+      "success": false,
+      "details": "Expected 200, got 400: Invalid host header",
+      "timestamp": "2025-09-28T14:59:04.230404"
     }
   ]
 }
