@@ -3,6 +3,7 @@ import logging
 from typing import Dict, Optional, List
 from datetime import datetime, timezone
 import json
+import uuid
 from minecraft import authentication
 from minecraft.exceptions import YggdrasilError
 from minecraft.networking.connection import Connection
