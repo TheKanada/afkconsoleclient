@@ -3,10 +3,16 @@ import logging
 from typing import Dict, Optional, List
 from datetime import datetime, timezone
 import json
-import uuid
-import socket
 import threading
 import time
+import uuid
+
+# Minecraft protocol imports
+from minecraft.networking.connection import Connection
+from minecraft.networking.packets import Packet, clientbound, serverbound
+from minecraft.exceptions import YggdrasilError
+from minecraft.authentication import AuthenticationToken
+from minecraft.networking.types import Type, VarInt, String, Boolean
 
 logger = logging.getLogger(__name__)
 
