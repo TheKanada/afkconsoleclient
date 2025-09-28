@@ -20,16 +20,38 @@ const AdminSetup = ({ setAdminExists }) => {
   const { login, API } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    const errors = [];
+    
+    if (!formData.username.trim()) {
+      errors.push("Username is required");
+    } else if (formData.username.length < 3) {
+      errors.push("Username must be at least 3 characters");
+    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+      errors.push("Username can only contain letters, numbers, and underscores");
+    }
+    
+    if (!formData.password) {
+      errors.push("Password is required");
+    } else if (formData.password.length < 6) {
+      errors.push("Password must be at least 6 characters");
+    } else if (formData.password.length > 128) {
+      errors.push("Password must be less than 128 characters");
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      errors.push("Passwords do not match");
+    }
+    
+    return errors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    const validationErrors = validateForm();
+    if (validationErrors.length > 0) {
+      validationErrors.forEach(error => toast.error(error));
       return;
     }
 
