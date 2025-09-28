@@ -31,8 +31,11 @@ function App() {
 
   // Check if admin exists on app load
   useEffect(() => {
-    checkAdminExists();
-    checkAuthToken();
+    const initializeApp = async () => {
+      checkAuthToken();
+      await checkAdminExists();
+    };
+    initializeApp();
   }, []);
 
   const checkAdminExists = async () => {
