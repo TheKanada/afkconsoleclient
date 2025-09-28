@@ -365,18 +365,30 @@ class MinecraftBot:
             return False
     
     async def disconnect(self):
-        """Disconnect from server"""
+        """Properly disconnect from Minecraft server"""
         try:
+            logger.info(f"Disconnecting {self.account_info.get('nickname')} from Minecraft server...")
+            
             self.is_running = False
             self.anti_afk_enabled = False
+            
+            # Close real Minecraft connection
+            if self.connection and hasattr(self.connection, 'disconnect'):
+                try:
+                    self.connection.disconnect()
+                    logger.info(f"Minecraft protocol connection closed for {self.account_info.get('nickname')}")
+                except Exception as e:
+                    logger.warning(f"Error closing connection: {e}")
+            
             self.is_connected = False
             
+            # Update database
             await self._update_connection_status(False)
             
-            logger.info(f"Bot {self.account_info.get('nickname', self.account_info.get('email'))} disconnected")
+            logger.info(f"Bot {self.account_info.get('nickname')} successfully disconnected")
             
         except Exception as e:
-            logger.error(f"Error disconnecting: {e}")
+            logger.error(f"Error disconnecting {self.account_info.get('nickname')}: {e}")
     
     def _cleanup(self):
         """Clean up resources"""
