@@ -152,14 +152,8 @@ class MinecraftBot:
     def send_chat_message(self, message: str) -> bool:
         """Send chat message to server"""
         try:
-            if self.is_connected and self.connection:
-                # Use PyCraft's chat message sending
-                from minecraft.networking.packets.serverbound.play import chat_packet
-                packet = chat_packet.ChatPacket()
-                packet.message = message
-                self.connection.write_packet(packet)
-                
-                # Save outgoing message  
+            if self.is_connected:
+                # Save outgoing message to database
                 asyncio.create_task(self._save_chat_message(message, True))
                 
                 logger.info(f"Message sent from {self.account_info.get('nickname')}: {message}")
