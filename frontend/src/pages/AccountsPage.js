@@ -133,6 +133,50 @@ const AccountsPage = () => {
     }
   };
 
+  const handleEditAccount = (account) => {
+    setEditingAccount({
+      id: account.id,
+      account_type: account.account_type,
+      email: account.email || "",
+      nickname: account.nickname || ""
+    });
+    setShowEditDialog(true);
+  };
+
+  const handleUpdateAccount = async (e) => {
+    e.preventDefault();
+    
+    if (editingAccount.account_type === "microsoft" && !editingAccount.email) {
+      toast.error("Email is required for Microsoft accounts");
+      return;
+    }
+    
+    if (editingAccount.account_type === "cracked" && !editingAccount.nickname) {
+      toast.error("Nickname is required for cracked accounts");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await axios.put(`${API}/accounts/${editingAccount.id}`, {
+        account_type: editingAccount.account_type,
+        email: editingAccount.account_type === "microsoft" ? editingAccount.email : null,
+        nickname: editingAccount.account_type === "cracked" ? editingAccount.nickname : null
+      });
+      
+      toast.success("Account updated successfully");
+      setShowEditDialog(false);
+      setEditingAccount(null);
+      fetchAccounts();
+    } catch (error) {
+      console.error("Error updating account:", error);
+      toast.error(error.response?.data?.detail || "Failed to update account");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getAccountIcon = (accountType) => {
     return accountType === "microsoft" ? (
       <Mail className="w-4 h-4" />
