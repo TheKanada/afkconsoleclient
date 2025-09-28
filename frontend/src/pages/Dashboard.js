@@ -294,16 +294,14 @@ const Dashboard = () => {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-white">User Management</CardTitle>
-              {user?.role === "admin" && (
-                <Button
-                  onClick={() => setShowCreateUser(!showCreateUser)}
-                  className="btn-minecraft"
-                  data-testid="create-user-toggle-button"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create User
-                </Button>
-              )}
+              <Button
+                onClick={() => setShowCreateUser(!showCreateUser)}
+                className="btn-minecraft"
+                data-testid="create-user-toggle-button"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create User
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
