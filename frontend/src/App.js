@@ -44,7 +44,13 @@ function App() {
       setAdminExists(response.data.admin_exists);
     } catch (error) {
       console.error('Error checking admin status:', error);
-      toast.error('Failed to check admin status');
+      if (error.response?.status >= 500) {
+        toast.error('Server error - please try again later');
+      } else if (!navigator.onLine) {
+        toast.error('No internet connection - check your network');
+      } else {
+        toast.error('Failed to check admin status');
+      }
       // If we can't check admin status, assume no admin exists
       setAdminExists(false);
     } finally {
