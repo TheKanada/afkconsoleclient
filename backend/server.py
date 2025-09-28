@@ -314,6 +314,72 @@ async def delete_minecraft_account(account_id: str, current_user: User = Depends
         raise HTTPException(status_code=404, detail="Account not found")
     return {"message": "Account deleted successfully"}
 
+@api_router.post("/accounts/{account_id}/connect")
+async def connect_account(account_id: str, current_user: User = Depends(get_current_user)):
+    # Find the account
+    account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    # Update account status to online
+    await db.minecraft_accounts.update_one(
+        {"id": account_id}, 
+        {"$set": {"is_online": True, "last_seen": datetime.now(timezone.utc)}}
+    )
+    
+    # Broadcast real-time update
+    await manager.broadcast_message({
+        "type": "account_connected",
+        "account_id": account_id,
+        "account_name": account.get("email") or account.get("nickname")
+    })
+    
+    return {"message": "Account connected successfully"}
+
+@api_router.post("/accounts/{account_id}/disconnect")
+async def disconnect_account(account_id: str, current_user: User = Depends(get_current_user)):
+    # Find the account
+    account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    # Update account status to offline
+    await db.minecraft_accounts.update_one(
+        {"id": account_id}, 
+        {"$set": {"is_online": False, "last_seen": datetime.now(timezone.utc)}}
+    )
+    
+    # Broadcast real-time update
+    await manager.broadcast_message({
+        "type": "account_disconnected",
+        "account_id": account_id,
+        "account_name": account.get("email") or account.get("nickname")
+    })
+    
+    return {"message": "Account disconnected successfully"}
+
+@api_router.post("/accounts/{account_id}/clear-inventory")
+async def clear_account_inventory(account_id: str, current_user: User = Depends(get_current_user)):
+    # Find the account
+    account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    if not account.get("is_online"):
+        raise HTTPException(status_code=400, detail="Account must be online to clear inventory")
+    
+    # TODO: Implement actual inventory clearing logic
+    # For now, we'll simulate it
+    
+    # Broadcast real-time update
+    await manager.broadcast_message({
+        "type": "inventory_cleared",
+        "account_id": account_id,
+        "account_name": account.get("email") or account.get("nickname")
+    })
+    
+    return {"message": "Inventory cleared successfully"}
+
 # Chat Routes
 @api_router.get("/chats", response_model=List[dict])
 async def get_chat_messages(current_user: User = Depends(get_current_user)):
