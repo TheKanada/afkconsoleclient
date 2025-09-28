@@ -119,26 +119,26 @@ class MinecraftBot:
     def _real_connection_thread(self):
         """REAL Minecraft protocol connection thread - NO FAKE OPERATIONS"""
         try:
-            # Register REAL packet handlers
-            self.connection.register_packet_handler(
-                clientbound.play.JoinGamePacket, 
-                self._handle_join_game
+            # Register REAL packet listeners
+            self.connection.register_packet_listener(
+                self._handle_join_game,
+                clientbound.play.JoinGamePacket
             )
-            self.connection.register_packet_handler(
-                clientbound.play.ChatMessagePacket,
-                self._handle_chat_message  
+            self.connection.register_packet_listener(
+                self._handle_chat_message,
+                clientbound.play.ChatMessagePacket
             )
-            self.connection.register_packet_handler(
-                clientbound.play.DisconnectPacket,
-                self._handle_disconnect
+            self.connection.register_packet_listener(
+                self._handle_disconnect,
+                clientbound.play.DisconnectPacket
             )
-            self.connection.register_packet_handler(
-                clientbound.play.KeepAlivePacket,
-                self._handle_keep_alive
+            self.connection.register_packet_listener(
+                self._handle_keep_alive,
+                clientbound.play.KeepAlivePacket
             )
-            self.connection.register_packet_handler(
-                clientbound.play.RespawnPacket,
-                self._handle_world_change
+            self.connection.register_packet_listener(
+                self._handle_world_change,
+                clientbound.play.RespawnPacket
             )
             
             # REAL connection attempt
