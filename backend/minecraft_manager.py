@@ -203,17 +203,46 @@ class MinecraftBot:
     def _send_login_messages(self):
         """Send configured login messages"""
         try:
+            # Wait a bit for connection to stabilize
+            time.sleep(3)
+            
             login_messages = self.server_settings.get('login_messages', [])
             for i, msg_config in enumerate(login_messages):
                 if i > 0:  # Add delay between messages
                     time.sleep(msg_config.get('delay', 2))
                 
                 message = msg_config.get('message', '')
-                if message:
+                if message and self.is_connected:
                     self.send_chat_message(message)
                     
         except Exception as e:
             logger.error(f"Error sending login messages: {e}")
+    
+    def _auto_reconnect(self):
+        """Auto-reconnect logic with proper retry mechanism"""
+        for attempt in range(3):
+            logger.info(f"Auto-reconnect attempt {attempt + 1}/3 for {self.account_info.get('nickname')}")
+            time.sleep(300)  # Wait 5 minutes
+            
+            if not self.is_running:
+                return
+            
+            try:
+                if asyncio.run(self.connect()):
+                    logger.info(f"Auto-reconnect successful for {self.account_info.get('nickname')}")
+                    return
+            except Exception as e:
+                logger.error(f"Auto-reconnect attempt {attempt + 1} failed: {e}")
+        
+        # If all attempts failed, wait 1 hour and try once more
+        logger.info(f"All reconnect attempts failed for {self.account_info.get('nickname')}, waiting 1 hour...")
+        time.sleep(3600)
+        
+        if self.is_running:
+            try:
+                asyncio.run(self.connect())
+            except Exception as e:
+                logger.error(f"Final reconnect attempt failed: {e}")
     
     def _auto_reconnect(self):
         """Auto-reconnect logic"""
