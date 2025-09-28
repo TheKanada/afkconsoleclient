@@ -234,15 +234,38 @@ const AccountsPage = () => {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-green-600 text-green-400 hover:bg-green-600 hover:text-white"
-                        disabled={account.is_online}
-                        data-testid={`connect-account-${account.id}`}
-                      >
-                        {account.is_online ? "Connected" : "Connect"}
-                      </Button>
+                      {account.is_online ? (
+                        <>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleClearInventory(account.id)}
+                            className="border-yellow-600 text-yellow-400 hover:bg-yellow-600 hover:text-white"
+                            data-testid={`clear-inventory-${account.id}`}
+                          >
+                            Clear Inventory
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDisconnectAccount(account.id)}
+                            className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                            data-testid={`disconnect-account-${account.id}`}
+                          >
+                            Disconnect
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleConnectAccount(account.id)}
+                          className="border-green-600 text-green-400 hover:bg-green-600 hover:text-white"
+                          data-testid={`connect-account-${account.id}`}
+                        >
+                          Connect
+                        </Button>
+                      )}
                       
                       <Button
                         variant="outline"
