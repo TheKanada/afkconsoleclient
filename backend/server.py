@@ -325,7 +325,55 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 # Health Check
 @api_router.get("/health")
 async def health_check():
-    return {"status": "ok", "message": "Minecraft AFK Console API"}
+    health_status = {
+        "status": "ok",
+        "message": "Minecraft AFK Console API",
+        "database": "unknown",
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Check database connection
+    if client and db:
+        try:
+            await client.admin.command('ping')
+            health_status["database"] = "connected"
+        except Exception as e:
+            health_status["database"] = f"error: {str(e)}"
+            health_status["status"] = "warning"
+    else:
+        health_status["database"] = "not_configured"
+        health_status["status"] = "error"
+    
+    return health_status
+
+# Database Statistics Endpoint
+@api_router.get("/database/stats")
+async def get_database_stats(current_user: User = Depends(get_current_user)):
+    """Get database statistics (admin only)"""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    if not db_manager:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        stats = await db_manager.get_database_stats()
+        return stats
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+# Database Initialization Endpoint (for manual setup)
+@api_router.post("/database/initialize")
+async def initialize_database_manual():
+    """Manually initialize database (useful for troubleshooting)"""
+    if not db_manager:
+        raise HTTPException(status_code=503, detail="Database manager not available")
+    
+    try:
+        await db_manager.initialize_database()
+        return {"message": "Database initialized successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database initialization failed: {str(e)}")
 
 # Demo Reset (for testing only)
 @api_router.post("/demo/reset")
