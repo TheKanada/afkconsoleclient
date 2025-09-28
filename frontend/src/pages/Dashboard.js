@@ -214,8 +214,82 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* User Management (Admin/Moderator only) */}
+      {/* Online Accounts & Recent Activity */}
       {(user?.role === "admin" || user?.role === "moderator") && (
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Online Accounts */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Activity className="w-5 h-5" />
+                Online Accounts ({dashboardStats.online_accounts.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {dashboardStats.online_accounts.length > 0 ? (
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {dashboardStats.online_accounts.map((account) => (
+                    <div key={account.id} className="flex items-center justify-between p-2 bg-gray-700 rounded">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span className="text-white text-sm">
+                          {account.account_type === "microsoft" ? account.email : account.nickname}
+                        </span>
+                        <Badge variant="secondary" className="text-xs">
+                          {account.account_type}
+                        </Badge>
+                      </div>
+                      <span className="text-gray-400 text-xs">
+                        {account.last_seen ? new Date(account.last_seen).toLocaleTimeString() : "Active"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-4 text-gray-400">
+                  <WifiOff className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No accounts currently online</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <MessageSquare className="w-5 h-5" />
+                Recent Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {dashboardStats.recent_activity.length > 0 ? (
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {dashboardStats.recent_activity.map((activity, index) => (
+                    <div key={index} className="flex items-start gap-3 p-2 bg-gray-700 rounded">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mt-2"></div>
+                      <div className="flex-1">
+                        <p className="text-white text-sm truncate">{activity.message}</p>
+                        <p className="text-gray-400 text-xs">
+                          {activity.timestamp ? new Date(activity.timestamp).toLocaleString() : "Recent"}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-4 text-gray-400">
+                  <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No recent activity</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* User Management (Admin only) */}
+      {user?.role === "admin" && (
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
             <div className="flex items-center justify-between">
