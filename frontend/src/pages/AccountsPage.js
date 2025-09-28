@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Mail, User, Trash2, Circle } from "lucide-react";
+import { Plus, Mail, User, Trash2, Circle, Edit } from "lucide-react";
 import axios from "axios";
 
 const AccountsPage = () => {
