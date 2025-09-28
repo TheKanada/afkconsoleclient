@@ -94,11 +94,7 @@ class MinecraftBot:
             # Keep connection alive
             while self.is_running and self.is_connected:
                 try:
-                    # Process packets
-                    packet = self.connection.read_packet()
-                    if packet:
-                        self.connection.handle_packet(packet)
-                    time.sleep(0.05)  # Small delay to prevent CPU spinning
+                    time.sleep(1)  # Keep bot alive
                 except Exception as e:
                     logger.error(f"Error in connection loop: {e}")
                     break
