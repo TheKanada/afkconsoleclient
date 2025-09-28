@@ -166,6 +166,11 @@ const AccountsPage = () => {
       toast.error("Nickname is required for cracked accounts");
       return;
     }
+    
+    if (!editingAccount.password) {
+      toast.error("Password is required for all accounts");
+      return;
+    }
 
     setLoading(true);
 
@@ -173,7 +178,9 @@ const AccountsPage = () => {
       await axios.put(`${API}/accounts/${editingAccount.id}`, {
         account_type: editingAccount.account_type,
         email: editingAccount.account_type === "microsoft" ? editingAccount.email : null,
-        nickname: editingAccount.account_type === "cracked" ? editingAccount.nickname : null
+        nickname: editingAccount.account_type === "cracked" ? editingAccount.nickname : null,
+        password: editingAccount.password,
+        login_enabled: editingAccount.login_enabled
       });
       
       toast.success("Account updated successfully");
