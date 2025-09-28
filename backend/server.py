@@ -431,6 +431,9 @@ async def setup_admin(user_data: UserCreate):
 
 @api_router.post("/auth/login", response_model=Token)
 async def login(user_data: UserLogin):
+    # Check database connection
+    await check_database_connection()
+    
     user = await db.users.find_one({"username": user_data.username})
     if not user or not verify_password(user_data.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Incorrect username or password")
