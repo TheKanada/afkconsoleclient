@@ -307,7 +307,20 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+async def check_database_connection():
+    """Check if database is available"""
+    if not db or not client:
+        raise HTTPException(status_code=503, detail="Database not available. Please check your MongoDB connection.")
+    
+    try:
+        await client.admin.command('ping', maxTimeMS=1000)
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Database connection failed: {str(e)}")
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    # Check database first
+    await check_database_connection()
+    
     try:
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")
