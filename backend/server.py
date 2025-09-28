@@ -628,25 +628,48 @@ async def connect_account(account_id: str, current_user: User = Depends(get_curr
 
 @api_router.post("/accounts/{account_id}/disconnect")
 async def disconnect_account(account_id: str, current_user: User = Depends(get_current_user)):
+    # Check database connection
+    await check_database_connection()
+    
     # Find the account
     account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
     
-    # Update account status to offline
+    # TODO: Implement actual Minecraft protocol disconnection
+    # For now, this is a SIMULATION - no real connection to close
+    
+    # Update account status to offline (SIMULATION)
     await db.minecraft_accounts.update_one(
         {"id": account_id}, 
-        {"$set": {"is_online": False, "last_seen": datetime.now(timezone.utc)}}
+        {"$set": {
+            "is_online": False, 
+            "last_seen": datetime.now(timezone.utc),
+            "connection_status": "disconnected"
+        }}
+    )
+    
+    # Log the simulated disconnection
+    await manager.log_system_event(
+        "info", 
+        f"SIMULATION: Account {account.get('email') or account.get('nickname')} marked as disconnected",
+        current_user.id,
+        "account_disconnect_simulation"
     )
     
     # Broadcast real-time update
     await manager.broadcast_message({
         "type": "account_disconnected",
         "account_id": account_id,
-        "account_name": account.get("email") or account.get("nickname")
+        "account_name": account.get("email") or account.get("nickname"),
+        "simulation": True
     })
     
-    return {"message": "Account disconnected successfully"}
+    return {
+        "message": "Account disconnection simulated",
+        "simulation": True,
+        "note": "This is a simulation. Real Minecraft server connection is not implemented yet."
+    }
 
 @api_router.post("/accounts/{account_id}/clear-inventory")
 async def clear_account_inventory(account_id: str, current_user: User = Depends(get_current_user)):
