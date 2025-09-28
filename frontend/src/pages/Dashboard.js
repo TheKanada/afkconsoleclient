@@ -305,7 +305,7 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            {showCreateUser && user?.role === "admin" && (
+            {showCreateUser && (
               <div className="mb-6 p-4 bg-gray-700 rounded-lg">
                 <h3 className="text-lg font-semibold text-white mb-4">Create New User</h3>
                 <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-3 gap-4">
