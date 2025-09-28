@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 class ComprehensiveMinecraftAPITester:
-    def __init__(self, base_url="https://minecraft-afk.preview.emergentagent.com"):
+    def __init__(self, base_url="https://afkcraft-console.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.admin_token = None
