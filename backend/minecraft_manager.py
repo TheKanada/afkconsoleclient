@@ -150,8 +150,8 @@ class MinecraftBot:
         logger.info(f"Bot {self.account_info.get('nickname')} successfully joined the game!")
         self.is_connected = True
         
-        # Update database
-        asyncio.create_task(self._update_connection_status(True))
+        # Update database - schedule coroutine on main event loop
+        self._schedule_async(self._update_connection_status(True))
     
     def _handle_chat_message(self, chat_packet):
         """Handle incoming chat messages from Minecraft server"""
