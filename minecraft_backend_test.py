@@ -46,7 +46,10 @@ class MinecraftBackendTester:
     def make_request(self, method: str, endpoint: str, data: dict = None, expected_status: int = 200, headers: dict = None) -> tuple:
         """Make HTTP request with proper error handling"""
         url = f"{self.api_url}/{endpoint}"
-        request_headers = {'Content-Type': 'application/json'}
+        request_headers = {
+            'Content-Type': 'application/json',
+            'Host': 'afkcraft-console.preview.emergentagent.com'
+        }
         
         if self.token:
             request_headers['Authorization'] = f'Bearer {self.token}'
