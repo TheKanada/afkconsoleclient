@@ -86,42 +86,53 @@ const ConnectPage = () => {
   };
 
   const handleConnect = async () => {
-    if (!serverSettings.server_ip.trim()) {
-      toast.error("Please enter a server IP address");
+    if (selectedAccounts.length === 0) {
+      toast.error("Please select at least one account to connect");
       return;
     }
 
-    if (selectedAccounts.length === 0) {
-      toast.error("Please select at least one account");
+    if (!serverSettings.server_ip) {
+      toast.error("Server IP not configured", {
+        description: "Please enter a valid server IP address"
+      });
       return;
     }
 
     setLoading(true);
     setConnectionStatus("connecting");
 
+    let successCount = 0;
+    let errorCount = 0;
+    let errorMessages = [];
+
     try {
-      const response = await axios.post(`${API}/server/connect`);
-      
-      if (response.data.simulation) {
+      // Connect each selected account individually - REAL connections
+      for (const accountId of selectedAccounts) {
+        try {
+          const response = await axios.post(`${API}/accounts/${accountId}/connect`);
+          successCount++;
+        } catch (error) {
+          errorCount++;
+          const errorMessage = error.response?.data?.detail || "Connection failed";
+          errorMessages.push(errorMessage);
+        }
+      }
+
+      if (successCount > 0) {
         setConnectionStatus("connected");
-        toast.success(`Connection simulated for ${selectedAccounts.length} account(s)`, {
-          description: `Server: ${response.data.server_ip || serverSettings.server_ip} (Simulation Mode)`
+        toast.success(`✅ REAL CONNECTION: ${successCount} account(s) connected to ${serverSettings.server_ip}`, {
+          description: `Successfully connected to Minecraft server`
         });
       } else {
-        setConnectionStatus("connected");
-        toast.success(`Connected ${selectedAccounts.length} account(s) to ${serverSettings.server_ip}`);
+        setConnectionStatus("disconnected");
+        toast.error(`❌ CONNECTION FAILED: Could not connect any accounts to ${serverSettings.server_ip}`, {
+          description: errorMessages.length > 0 ? errorMessages[0] : "All connection attempts failed"
+        });
       }
     } catch (error) {
-      console.error("Error connecting to server:", error);
+      console.error("Error connecting accounts:", error);
       setConnectionStatus("disconnected");
-      
-      if (error.response?.status === 400 && error.response?.data?.detail?.includes("Server IP")) {
-        toast.error("Server IP not configured", {
-          description: "Please enter a valid server IP address"
-        });
-      } else {
-        toast.error("Failed to connect to server");
-      }
+      toast.error("Failed to connect to server");
     } finally {
       setLoading(false);
     }
