@@ -690,16 +690,24 @@ async def update_minecraft_account(account_id: str, account_data: MinecraftAccou
         raise HTTPException(status_code=404, detail="Account not found")
     
     # Validate input based on account type
-    if account_data.account_type == "microsoft" and not account_data.email:
-        raise HTTPException(status_code=400, detail="Email required for Microsoft accounts")
-    elif account_data.account_type == "cracked" and not account_data.nickname:
-        raise HTTPException(status_code=400, detail="Nickname required for cracked accounts")
+    if account_data.account_type == "microsoft":
+        if not account_data.email:
+            raise HTTPException(status_code=400, detail="Email required for Microsoft accounts")
+        if not account_data.password:
+            raise HTTPException(status_code=400, detail="Password required for Microsoft accounts")
+    elif account_data.account_type == "cracked":
+        if not account_data.nickname:
+            raise HTTPException(status_code=400, detail="Nickname required for cracked accounts")
+        if not account_data.password:
+            raise HTTPException(status_code=400, detail="Password required for cracked accounts")
     
-    # Prepare update data
+    # Prepare update data with password and login_enabled
     update_data = {
         "account_type": account_data.account_type,
         "email": account_data.email if account_data.account_type == "microsoft" else None,
         "nickname": account_data.nickname if account_data.account_type == "cracked" else None,
+        "password": account_data.password,
+        "login_enabled": account_data.login_enabled
     }
     
     # Update account
