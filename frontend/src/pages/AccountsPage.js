@@ -87,12 +87,26 @@ const AccountsPage = () => {
 
   const handleConnectAccount = async (accountId) => {
     try {
-      await axios.post(`${API}/accounts/${accountId}/connect`);
-      toast.success("Account connected successfully");
+      const response = await axios.post(`${API}/accounts/${accountId}/connect`);
+      
+      if (response.data.simulation) {
+        toast.success("Account connection simulated", {
+          description: "Note: This is a simulation. Real Minecraft connection not implemented yet."
+        });
+      } else {
+        toast.success("Account connected successfully");
+      }
+      
       fetchAccounts();
     } catch (error) {
       console.error("Error connecting account:", error);
-      toast.error(error.response?.data?.detail || "Failed to connect account");
+      if (error.response?.status === 400 && error.response?.data?.detail?.includes("Server IP")) {
+        toast.error("Server not configured", {
+          description: "Please configure server IP in Connect page first"
+        });
+      } else {
+        toast.error(error.response?.data?.detail || "Failed to connect account");
+      }
     }
   };
 
