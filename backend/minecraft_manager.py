@@ -339,21 +339,29 @@ class MinecraftBot:
         return self.send_chat_message(command)
     
     async def clear_inventory(self) -> bool:
-        """Clear player inventory"""
+        """Clear player inventory using real commands"""
         try:
-            # Send inventory clearing commands
+            if not (self.is_connected and self.connection and self.connection.connected):
+                logger.error(f"Cannot clear inventory - {self.account_info.get('nickname')} not connected")
+                return False
+            
+            # Send real inventory clearing commands
             commands = [
-                '/clear @s',  # Clear inventory
-                '/effect clear @s',  # Clear effects
+                '/clear',  # Clear own inventory
+                '/effect clear @s',  # Clear effects 
             ]
             
+            success_count = 0
             for cmd in commands:
-                self.send_command(cmd)
-                await asyncio.sleep(0.5)
+                if self.send_command(cmd):
+                    success_count += 1
+                await asyncio.sleep(1)  # Wait between commands
             
-            return True
+            logger.info(f"Inventory clear commands sent from {self.account_info.get('nickname')}: {success_count}/{len(commands)}")
+            return success_count > 0
+            
         except Exception as e:
-            logger.error(f"Error clearing inventory: {e}")
+            logger.error(f"Error clearing inventory for {self.account_info.get('nickname')}: {e}")
             return False
     
     async def disconnect(self):
