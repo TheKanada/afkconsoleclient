@@ -23,6 +23,7 @@ jq==1.10.0
 markdown-it-py==4.0.0
 mccabe==0.7.0
 mdurl==0.1.2
+minecraft-python==161348
 motor==3.3.1
 mypy==1.18.2
 mypy_extensions==1.1.0
@@ -37,6 +38,7 @@ pluggy==1.6.0
 pyasn1==0.6.1
 pycodestyle==2.14.0
 pycparser==2.23
+PyCraft==1503040
 pydantic==2.11.9
 pydantic_core==2.33.2
 pyflakes==3.4.0
