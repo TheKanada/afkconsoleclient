@@ -328,21 +328,44 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/accounts")}
+              className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-green-500"
+              data-testid="quick-action-accounts"
+            >
               <Users className="w-6 h-6" />
-              <span className="text-sm">View Accounts</span>
+              <span className="text-sm">Manage Accounts</span>
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700">
-              <div className="w-6 h-6 rounded bg-green-500"></div>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/connect")}
+              className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-green-500"
+              data-testid="quick-action-connect"
+            >
+              <Wifi className="w-6 h-6" />
               <span className="text-sm">Connect Server</span>
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700">
-              <div className="w-6 h-6 rounded bg-yellow-500"></div>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/chats")}
+              className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-yellow-500"
+              data-testid="quick-action-chats"
+            >
+              <MessageSquare className="w-6 h-6" />
               <span className="text-sm">View Chats</span>
             </Button>
-            <Button variant="outline" className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700">
-              <div className="w-6 h-6 rounded bg-blue-500"></div>
-              <span className="text-sm">Settings</span>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/connect")}
+              className="h-20 flex flex-col items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-blue-500"
+              data-testid="quick-action-settings"
+            >
+              <Settings className="w-6 h-6" />
+              <span className="text-sm">Bot Settings</span>
             </Button>
           </div>
         </CardContent>
