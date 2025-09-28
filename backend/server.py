@@ -537,12 +537,19 @@ async def websocket_endpoint(websocket: WebSocket):
 # Include the router in the main app
 app.include_router(api_router)
 
+# Security middleware
+app.add_middleware(
+    TrustedHostMiddleware, 
+    allowed_hosts=["minecraft-afk.preview.emergentagent.com", "localhost", "127.0.0.1"]
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Configure logging
