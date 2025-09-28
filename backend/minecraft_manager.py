@@ -30,6 +30,15 @@ class MinecraftBot:
         self.thread = None
         self.loop = loop or asyncio.get_event_loop()  # Store main event loop for async operations
         
+    def _schedule_async(self, coro):
+        """Schedule an async operation from a thread to the main event loop"""
+        try:
+            if self.loop and not self.loop.is_closed():
+                # Schedule coroutine to run on the main event loop
+                asyncio.run_coroutine_threadsafe(coro, self.loop)
+        except Exception as e:
+            logger.error(f"Error scheduling async operation: {e}")
+        
     async def connect(self) -> bool:
         """Connect to Minecraft server using real protocol"""
         try:
