@@ -8,7 +8,6 @@ from minecraft import authentication
 from minecraft.exceptions import YggdrasilError
 from minecraft.networking.connection import Connection
 from minecraft.networking.packets import Packet, clientbound, serverbound
-from minecraft.compat import input
 import threading
 import time
 
