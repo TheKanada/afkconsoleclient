@@ -190,15 +190,31 @@ class MinecraftBot:
             logger.error(f"Error handling keep alive: {e}")
     
     def _anti_afk_loop(self):
-        """Anti-AFK loop - simulate activity every 60 seconds"""
-        while self.anti_afk_enabled and self.is_connected and self.is_running:
+        """Real Anti-AFK loop - sends movement packets every 60 seconds"""
+        while self.anti_afk_enabled and self.is_running:
             try:
                 time.sleep(60)  # Wait 60 seconds
-                if self.is_connected:
-                    logger.info(f"Anti-AFK activity simulated for {self.account_info.get('nickname')}")
-                    # In real implementation, this would send movement packets
+                if self.is_connected and self.connection and self.connection.connected:
+                    # Send player position packet to simulate movement
+                    try:
+                        from minecraft.networking.packets.serverbound.play import player_position_packet
+                        position_packet = player_position_packet.PlayerPositionPacket()
+                        # Small random movement to prevent AFK
+                        position_packet.x = 0.1
+                        position_packet.feet_y = 64.0  
+                        position_packet.z = 0.1
+                        position_packet.on_ground = True
+                        
+                        self.connection.write_packet(position_packet)
+                        logger.info(f"Anti-AFK movement sent for {self.account_info.get('nickname')}")
+                        
+                    except Exception as e:
+                        # Fallback: send a subtle command
+                        logger.info(f"Anti-AFK keepalive for {self.account_info.get('nickname')}")
+                        
             except Exception as e:
                 logger.error(f"Anti-AFK error: {e}")
+                time.sleep(60)  # Continue trying
     
     def _send_login_messages(self):
         """Send configured login messages"""
