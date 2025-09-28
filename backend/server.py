@@ -316,7 +316,7 @@ class ConnectionManager:
 
     async def log_system_event(self, level: str, message: str, user_id: str = None, action: str = None):
         """Log system events to database"""
-        if db:
+        if db is not None:
             try:
                 log_entry = SystemLog(
                     level=level,
