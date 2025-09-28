@@ -3,26 +3,26 @@
     "total_tests": 3,
     "passed_tests": 2,
     "success_rate": 0.6666666666666666,
-    "timestamp": "2025-09-28T10:02:42.105869"
+    "timestamp": "2025-09-28T10:43:53.996083"
   },
   "results": [
     {
       "test": "Health Check",
       "success": true,
       "details": "Status: 200",
-      "timestamp": "2025-09-28T10:02:42.026124"
+      "timestamp": "2025-09-28T10:43:53.883951"
     },
     {
       "test": "Check Admin Exists",
       "success": true,
       "details": "Status: 200",
-      "timestamp": "2025-09-28T10:02:42.068093"
+      "timestamp": "2025-09-28T10:43:53.960255"
     },
     {
       "test": "User Login",
       "success": false,
       "details": "Expected 200, got 401: {'detail': 'Incorrect username or password'}",
-      "timestamp": "2025-09-28T10:02:42.105008"
+      "timestamp": "2025-09-28T10:43:53.995230"
     }
   ]
 }
