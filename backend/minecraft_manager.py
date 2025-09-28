@@ -307,19 +307,29 @@ class MinecraftBot:
             logger.error(f"Error saving chat message: {e}")
     
     def send_chat_message(self, message: str) -> bool:
-        """Send chat message to server"""
+        """Send real chat message to Minecraft server"""
         try:
-            if self.is_connected:
+            if self.is_connected and self.connection and self.connection.connected:
+                # Send actual chat packet
+                from minecraft.networking.packets.serverbound.play import chat_packet
+                
+                chat_pkt = chat_packet.ChatPacket()
+                chat_pkt.message = message
+                
+                self.connection.write_packet(chat_pkt)
+                
                 # Save outgoing message to database
                 asyncio.create_task(self._save_chat_message(message, True))
                 
-                logger.info(f"Message sent from {self.account_info.get('nickname')}: {message}")
+                logger.info(f"REAL message sent from {self.account_info.get('nickname')}: {message}")
                 return True
+            else:
+                logger.warning(f"Cannot send message - {self.account_info.get('nickname')} not connected")
+                return False
+                
         except Exception as e:
-            logger.error(f"Error sending chat message: {e}")
+            logger.error(f"Error sending chat message from {self.account_info.get('nickname')}: {e}")
             return False
-        
-        return False
     
     def send_command(self, command: str) -> bool:
         """Send command to server"""
