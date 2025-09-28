@@ -1,4 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../App";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,18 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus, Users, Shield, UserCheck } from "lucide-react";
+import { 
+  Plus, 
+  Users, 
+  Shield, 
+  UserCheck, 
+  Activity,
+  MessageSquare,
+  Wifi,
+  WifiOff,
+  RefreshCw,
+  Settings
+} from "lucide-react";
 import axios from "axios";
 
 const Dashboard = () => {
