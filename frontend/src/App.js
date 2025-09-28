@@ -92,28 +92,39 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <Routes>
-            {/* Admin Setup Route */}
+            {/* Admin Setup Route - Only show if no admin exists */}
             {!adminExists && (
               <Route path="/setup" element={<AdminSetup setAdminExists={setAdminExists} />} />
             )}
             
-            {/* Login Route */}
-            <Route path="/login" element={<Login />} />
+            {/* Login Route - Only show if admin exists */}
+            {adminExists && (
+              <Route path="/login" element={<Login />} />
+            )}
             
-            {/* Protected Routes */}
-            {user ? (
+            {/* Protected Routes - Only accessible when logged in */}
+            {user && (
               <Route path="/" element={<Layout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="accounts" element={<AccountsPage />} />
                 <Route path="chats" element={<ChatsPage />} />
                 <Route path="connect" element={<ConnectPage />} />
               </Route>
-            ) : (
-              <Route path="*" element={<Navigate to={!adminExists ? "/setup" : "/login"} />} />
             )}
             
-            {/* Catch all redirect */}
-            <Route path="*" element={<Navigate to="/" />} />
+            {/* Default redirects based on state */}
+            <Route 
+              path="*" 
+              element={
+                user ? (
+                  <Navigate to="/" replace />
+                ) : !adminExists ? (
+                  <Navigate to="/setup" replace />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              } 
+            />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-right" />
