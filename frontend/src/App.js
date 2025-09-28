@@ -109,7 +109,7 @@ function App() {
                 <Route path="connect" element={<ConnectPage />} />
               </Route>
             ) : (
-              <Route path="*" element={<Navigate to={!adminExists ? "/setup" : "/login"} />}
+              <Route path="*" element={<Navigate to={!adminExists ? "/setup" : "/login"} />} />
             )}
             
             {/* Catch all redirect */}
