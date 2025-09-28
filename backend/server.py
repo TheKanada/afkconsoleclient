@@ -665,25 +665,45 @@ async def disconnect_account(account_id: str, current_user: User = Depends(get_c
 
 @api_router.post("/accounts/{account_id}/clear-inventory")
 async def clear_account_inventory(account_id: str, current_user: User = Depends(get_current_user)):
+    # Check database connection
+    await check_database_connection()
+    
     # Find the account
     account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
     
-    if not account.get("is_online"):
-        raise HTTPException(status_code=400, detail="Account must be online to clear inventory")
+    # Check if account is connected
+    if not minecraft_manager.is_account_connected(account_id):
+        raise HTTPException(status_code=400, detail="Account must be connected to server to clear inventory")
     
-    # TODO: Implement actual inventory clearing logic
-    # For now, we'll simulate it
-    
-    # Broadcast real-time update
-    await manager.broadcast_message({
-        "type": "inventory_cleared",
-        "account_id": account_id,
-        "account_name": account.get("email") or account.get("nickname")
-    })
-    
-    return {"message": "Inventory cleared successfully"}
+    # Clear inventory using Minecraft manager
+    try:
+        success = await minecraft_manager.clear_account_inventory(account_id)
+        
+        if success:
+            # Log inventory clearing
+            await manager.log_system_event(
+                "info", 
+                f"Inventory cleared for account {account.get('email') or account.get('nickname')}",
+                current_user.id,
+                "inventory_clear"
+            )
+            
+            # Broadcast real-time update
+            await manager.broadcast_message({
+                "type": "inventory_cleared",
+                "account_id": account_id,
+                "account_name": account.get("email") or account.get("nickname")
+            })
+            
+            return {"message": "Inventory cleared successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to clear inventory")
+            
+    except Exception as e:
+        logger.error(f"Error clearing inventory for account {account_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to clear inventory: {str(e)}")
 
 # Chat Routes
 @api_router.get("/chats", response_model=List[dict])
