@@ -649,16 +649,25 @@ async def delete_user(user_id: str, current_user: User = Depends(get_current_use
 # Minecraft Account Routes
 @api_router.post("/accounts", response_model=dict)
 async def create_minecraft_account(account_data: MinecraftAccountCreate, current_user: User = Depends(get_current_user)):
-    if account_data.account_type == "microsoft" and not account_data.email:
-        raise HTTPException(status_code=400, detail="Email required for Microsoft accounts")
-    elif account_data.account_type == "cracked" and not account_data.nickname:
-        raise HTTPException(status_code=400, detail="Nickname required for cracked accounts")
+    # Validation for required fields
+    if account_data.account_type == "microsoft":
+        if not account_data.email:
+            raise HTTPException(status_code=400, detail="Email required for Microsoft accounts")
+        if not account_data.password:
+            raise HTTPException(status_code=400, detail="Password required for Microsoft accounts")
+    elif account_data.account_type == "cracked":
+        if not account_data.nickname:
+            raise HTTPException(status_code=400, detail="Nickname required for cracked accounts")
+        if not account_data.password:
+            raise HTTPException(status_code=400, detail="Password required for cracked accounts")
     
     account = MinecraftAccount(
         user_id=current_user.id,
         account_type=account_data.account_type,
         email=account_data.email,
-        nickname=account_data.nickname
+        nickname=account_data.nickname,
+        password=account_data.password,
+        login_enabled=account_data.login_enabled
     )
     
     await db.minecraft_accounts.insert_one(account.dict())
