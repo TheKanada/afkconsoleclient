@@ -379,6 +379,38 @@ const AccountsPage = () => {
                 </div>
               )}
 
+              {/* Password field for all account types */}
+              {editingAccount?.account_type && (
+                <div className="space-y-2">
+                  <Label htmlFor="edit_password" className="text-gray-300">Password</Label>
+                  <Input
+                    id="edit_password"
+                    type="password"
+                    value={editingAccount?.password || ""}
+                    onChange={(e) => setEditingAccount({ ...editingAccount, password: e.target.value })}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="Enter account password"
+                    required
+                  />
+                </div>
+              )}
+
+              {/* Login system checkbox */}
+              {editingAccount?.account_type && (
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="edit_login_enabled"
+                    checked={editingAccount?.login_enabled || false}
+                    onChange={(e) => setEditingAccount({ ...editingAccount, login_enabled: e.target.checked })}
+                    className="rounded border-gray-600 bg-gray-700"
+                  />
+                  <Label htmlFor="edit_login_enabled" className="text-gray-300">
+                    Server has login system (will send /login {"{password}"} automatically)
+                  </Label>
+                </div>
+              )}
+
               <div className="flex gap-2 pt-4">
                 <Button type="submit" disabled={loading} className="btn-minecraft" data-testid="update-account-submit-button">
                   {loading ? "Updating..." : "Update Account"}
