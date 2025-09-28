@@ -15,6 +15,8 @@ const AccountsPage = () => {
   const { API } = useContext(AuthContext);
   const [accounts, setAccounts] = useState([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
   const [newAccount, setNewAccount] = useState({
     account_type: "",
     email: "",
