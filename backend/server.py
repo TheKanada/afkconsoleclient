@@ -972,7 +972,7 @@ async def disconnect_from_server(current_user: User = Depends(get_current_user))
     # Log simulation
     await manager.log_system_event(
         "info", 
-        f"SIMULATION: Server disconnection initiated",
+        "SIMULATION: Server disconnection initiated",
         current_user.id,
         "server_disconnect_simulation"
     )
