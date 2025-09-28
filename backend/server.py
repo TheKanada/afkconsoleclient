@@ -316,7 +316,7 @@ async def send_message(message_data: SendMessage, current_user: User = Depends(g
 # Server Settings Routes
 @api_router.get("/server-settings", response_model=dict)
 async def get_server_settings(current_user: User = Depends(get_current_user)):
-    settings = await db.server_settings.find_one({"user_id": current_user.id})
+    settings = await db.server_settings.find_one({"user_id": current_user.id}, {"_id": 0})
     if not settings:
         # Create default settings
         default_settings = ServerSettings(user_id=current_user.id, server_ip="")
