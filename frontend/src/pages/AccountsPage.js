@@ -362,6 +362,16 @@ const AccountsPage = () => {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => handleEditAccount(account)}
+                        className="border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white"
+                        data-testid={`edit-account-${account.id}`}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleDeleteAccount(account.id)}
                         className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
                         data-testid={`delete-account-${account.id}`}
