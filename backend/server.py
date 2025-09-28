@@ -335,7 +335,7 @@ async def update_server_settings(settings_data: ServerSettingsUpdate, current_us
         upsert=True
     )
     
-    updated_settings = await db.server_settings.find_one({"user_id": current_user.id})
+    updated_settings = await db.server_settings.find_one({"user_id": current_user.id}, {"_id": 0})
     return updated_settings
 
 @api_router.post("/server/connect")
