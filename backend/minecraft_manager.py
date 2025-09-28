@@ -418,9 +418,12 @@ class MinecraftBot:
             self.anti_afk_enabled = False
             
             # Close real Minecraft connection
-            if self.connection and hasattr(self.connection, 'disconnect'):
+            if self.connection:
                 try:
-                    self.connection.disconnect()
+                    if hasattr(self.connection, 'disconnect'):
+                        self.connection.disconnect()
+                    elif hasattr(self.connection, 'close'):
+                        self.connection.close()
                     logger.info(f"Minecraft protocol connection closed for {self.account_info.get('nickname')}")
                 except Exception as e:
                     logger.warning(f"Error closing connection: {e}")
