@@ -1,0 +1,130 @@
+{
+  "test_type": "database_enhanced_backend",
+  "timestamp": "2025-09-28T12:33:40.628960",
+  "summary": {
+    "tests_run": 17,
+    "tests_passed": 16,
+    "success_rate": "94.1%"
+  },
+  "test_results": [
+    {
+      "test_name": "Database Health Check - Structure",
+      "success": true,
+      "details": "Database status: connected, Overall status: ok",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.459117"
+    },
+    {
+      "test_name": "Database Health Check - Connection",
+      "success": true,
+      "details": "Database connection is healthy",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.459148"
+    },
+    {
+      "test_name": "Admin Check - Database Awareness",
+      "success": true,
+      "details": "Admin exists: True, DB status: None",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.500209"
+    },
+    {
+      "test_name": "Admin Login - Database Authentication",
+      "success": true,
+      "details": "Admin login successful with database authentication",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.764248"
+    },
+    {
+      "test_name": "Database Statistics - Collections",
+      "success": true,
+      "details": "All required collections found: ['server_settings', 'system_logs', 'minecraft_accounts', 'users', 'chat_messages']",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.804963"
+    },
+    {
+      "test_name": "Database Statistics - Structure",
+      "success": true,
+      "details": "Database: test_database, Collections: 5",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.804992"
+    },
+    {
+      "test_name": "Database Manual Initialization",
+      "success": true,
+      "details": "Database initialization completed successfully",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.849147"
+    },
+    {
+      "test_name": "Database Error Handling - User listing with DB dependency",
+      "success": true,
+      "details": "Endpoint working with database connection",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.887007"
+    },
+    {
+      "test_name": "Database Error Handling - Account listing with DB dependency",
+      "success": true,
+      "details": "Endpoint working with database connection",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.939843"
+    },
+    {
+      "test_name": "Database Error Handling - Dashboard stats with DB dependency",
+      "success": true,
+      "details": "Endpoint working with database connection",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:35.983269"
+    },
+    {
+      "test_name": "System Logging - Account creation logging",
+      "success": true,
+      "details": "Action completed (logging should occur in background)",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:36.022636"
+    },
+    {
+      "test_name": "System Logging - Dashboard access logging",
+      "success": true,
+      "details": "Action completed (logging should occur in background)",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:36.065616"
+    },
+    {
+      "test_name": "Database-Aware Authentication - Login",
+      "success": true,
+      "details": "Login successful for user: admin",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:39.888130"
+    },
+    {
+      "test_name": "Database-Aware Authentication - Token Validation",
+      "success": true,
+      "details": "Token validation with database lookup successful",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:40.271570"
+    },
+    {
+      "test_name": "Collection & Indexes - User collection with indexes",
+      "success": true,
+      "details": "Data operation successful (collections and indexes working)",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:40.537267"
+    },
+    {
+      "test_name": "Collection & Indexes - Minecraft accounts collection",
+      "success": true,
+      "details": "Data operation successful (collections and indexes working)",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:40.591561"
+    },
+    {
+      "test_name": "Collection & Indexes - Chat messages collection",
+      "success": false,
+      "details": "Data operation failed (status: 500)",
+      "response_data": null,
+      "timestamp": "2025-09-28T12:33:40.628916"
+    }
+  ]
+}
