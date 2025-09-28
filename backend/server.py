@@ -263,7 +263,7 @@ async def create_minecraft_account(account_data: MinecraftAccountCreate, current
 
 @api_router.get("/accounts", response_model=List[dict])
 async def get_minecraft_accounts(current_user: User = Depends(get_current_user)):
-    accounts = await db.minecraft_accounts.find({"user_id": current_user.id}).to_list(1000)
+    accounts = await db.minecraft_accounts.find({"user_id": current_user.id}, {"_id": 0}).to_list(1000)
     return accounts
 
 @api_router.delete("/accounts/{account_id}")
