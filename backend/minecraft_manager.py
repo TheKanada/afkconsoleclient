@@ -141,7 +141,7 @@ class MinecraftBot:
             self.is_connected = False
         finally:
             self.is_connected = False
-            asyncio.create_task(self._update_connection_status(False))
+            # Can't use asyncio.create_task from thread, will update in disconnect method
     
     def _handle_join_game(self, join_game_packet):
         """Handle successful join to Minecraft server"""
