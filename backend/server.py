@@ -1017,53 +1017,6 @@ async def update_server_settings(settings_data: ServerSettingsUpdate, current_us
     updated_settings = await db.server_settings.find_one({"user_id": current_user.id}, {"_id": 0})
     return updated_settings
 
-@api_router.post("/server/connect")
-async def connect_to_server(current_user: User = Depends(get_current_user)):
-    # Check database connection
-    await check_database_connection()
-    
-    # Get server settings
-    server_settings = await db.server_settings.find_one({"user_id": current_user.id})
-    if not server_settings or not server_settings.get("server_ip"):
-        raise HTTPException(status_code=400, detail="Server IP not configured")
-    
-    # Log simulation
-    await manager.log_system_event(
-        "info", 
-        f"SIMULATION: Server connection initiated to {server_settings.get('server_ip')}",
-        current_user.id,
-        "server_connect_simulation"
-    )
-    
-    # TODO: Implement actual Minecraft server connection using minecraft-protocol library
-    # For now, just simulate connection
-    return {
-        "message": f"Server connection simulated for {server_settings.get('server_ip')}",
-        "simulation": True,
-        "server_ip": server_settings.get("server_ip"),
-        "note": "This is a simulation. Real Minecraft server connection not implemented yet."
-    }
-
-@api_router.post("/server/disconnect")
-async def disconnect_from_server(current_user: User = Depends(get_current_user)):
-    # Check database connection
-    await check_database_connection()
-    
-    # Log simulation
-    await manager.log_system_event(
-        "info", 
-        "SIMULATION: Server disconnection initiated",
-        current_user.id,
-        "server_disconnect_simulation"
-    )
-    
-    # TODO: Implement actual Minecraft server disconnection
-    return {
-        "message": "Server disconnection simulated",
-        "simulation": True,
-        "note": "This is a simulation. Real Minecraft server connection not implemented yet."
-    }
-
 # Dashboard Stats Route
 @api_router.get("/dashboard/stats", response_model=dict)
 async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
