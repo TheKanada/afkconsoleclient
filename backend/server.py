@@ -308,7 +308,7 @@ class ConnectionManager:
         for connection in self.active_connections:
             try:
                 await connection.send_json(message)
-            except:
+            except Exception:
                 dead_connections.append(connection)
         
         # Remove dead connections
