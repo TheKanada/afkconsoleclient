@@ -18,7 +18,7 @@ from minecraft.networking.types import Type, VarInt, String, Boolean
 logger = logging.getLogger(__name__)
 
 class MinecraftBot:
-    def __init__(self, account_info: dict, server_settings: dict, db_manager):
+    def __init__(self, account_info: dict, server_settings: dict, db_manager, loop: asyncio.AbstractEventLoop = None):
         self.account_info = account_info
         self.server_settings = server_settings  
         self.db_manager = db_manager
@@ -28,6 +28,7 @@ class MinecraftBot:
         self.anti_afk_enabled = False
         self.last_message_time = datetime.now()
         self.thread = None
+        self.loop = loop or asyncio.get_event_loop()  # Store main event loop for async operations
         
     async def connect(self) -> bool:
         """Connect to Minecraft server using real protocol"""
