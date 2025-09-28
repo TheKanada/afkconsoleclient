@@ -5,7 +5,7 @@
     "passed_tests": 0,
     "critical_failures": 1,
     "success_rate": 0.0,
-    "timestamp": "2025-09-28T14:49:52.727058"
+    "timestamp": "2025-09-28T14:50:09.681780"
   },
   "critical_failures": [
     "Backend Health Check: Backend not responding: {'text': 'Invalid host header'}"
@@ -16,7 +16,7 @@
       "success": false,
       "details": "Backend not responding: {'text': 'Invalid host header'}",
       "critical": true,
-      "timestamp": "2025-09-28T14:49:52.726779"
+      "timestamp": "2025-09-28T14:50:09.681475"
     }
   ]
 }
