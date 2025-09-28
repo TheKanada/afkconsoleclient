@@ -1,0 +1,172 @@
+{
+  "summary": {
+    "total_tests": 27,
+    "passed_tests": 25,
+    "success_rate": 0.9259259259259259,
+    "timestamp": "2025-09-28T10:45:30.817932"
+  },
+  "results": [
+    {
+      "test": "Demo Reset",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:26.977309"
+    },
+    {
+      "test": "Admin Setup",
+      "success": true,
+      "details": "Admin created: testadmin",
+      "timestamp": "2025-09-28T10:45:27.244720"
+    },
+    {
+      "test": "Admin Login",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-09-28T10:45:29.146430"
+    },
+    {
+      "test": "Create Regular User",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:29.413844"
+    },
+    {
+      "test": "Create Moderator User",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:29.682135"
+    },
+    {
+      "test": "Get Users (Admin)",
+      "success": true,
+      "details": "Found 3 users",
+      "timestamp": "2025-09-28T10:45:29.722851"
+    },
+    {
+      "test": "User Login",
+      "success": true,
+      "details": "User logged in: testuser",
+      "timestamp": "2025-09-28T10:45:29.991980"
+    },
+    {
+      "test": "Role-based Access Control",
+      "success": true,
+      "details": "User correctly denied access: 403",
+      "timestamp": "2025-09-28T10:45:30.030634"
+    },
+    {
+      "test": "Create Cracked Account",
+      "success": true,
+      "details": "Account ID: 997e1416-1019-4f22-bac5-ee94ff7f025a",
+      "timestamp": "2025-09-28T10:45:30.066776"
+    },
+    {
+      "test": "Create Microsoft Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.104771"
+    },
+    {
+      "test": "Get Accounts",
+      "success": true,
+      "details": "Found 2 accounts",
+      "timestamp": "2025-09-28T10:45:30.142011"
+    },
+    {
+      "test": "Connect Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.182177"
+    },
+    {
+      "test": "Clear Inventory",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.219852"
+    },
+    {
+      "test": "Disconnect Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.260462"
+    },
+    {
+      "test": "Clear Inventory (Offline)",
+      "success": true,
+      "details": "Correctly failed: 400",
+      "timestamp": "2025-09-28T10:45:30.295414"
+    },
+    {
+      "test": "Delete Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.372849"
+    },
+    {
+      "test": "Send Chat Message",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.458662"
+    },
+    {
+      "test": "Get Chat Messages",
+      "success": true,
+      "details": "Found 1 messages",
+      "timestamp": "2025-09-28T10:45:30.495671"
+    },
+    {
+      "test": "Dashboard Stats (Admin)",
+      "success": true,
+      "details": "Active: 1, Total: 7",
+      "timestamp": "2025-09-28T10:45:30.531230"
+    },
+    {
+      "test": "Dashboard Stats (User)",
+      "success": true,
+      "details": "User correctly denied access: 403",
+      "timestamp": "2025-09-28T10:45:30.569304"
+    },
+    {
+      "test": "Get Server Settings",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.609047"
+    },
+    {
+      "test": "Update Server Settings",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.644197"
+    },
+    {
+      "test": "Server Connect",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.678741"
+    },
+    {
+      "test": "Server Disconnect",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:45:30.713103"
+    },
+    {
+      "test": "Invalid Login",
+      "success": true,
+      "details": "Correctly returned 401: 401",
+      "timestamp": "2025-09-28T10:45:30.749092"
+    },
+    {
+      "test": "Unauthorized Access",
+      "success": false,
+      "details": "Correctly returned 401: 403",
+      "timestamp": "2025-09-28T10:45:30.782671"
+    },
+    {
+      "test": "Invalid Account Creation",
+      "success": true,
+      "details": "Correctly returned 400: 400",
+      "timestamp": "2025-09-28T10:45:30.817635"
+    }
+  ]
+}
