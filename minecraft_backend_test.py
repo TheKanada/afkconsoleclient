@@ -48,7 +48,7 @@ class MinecraftBackendTester:
         url = f"{self.api_url}/{endpoint}"
         request_headers = {
             'Content-Type': 'application/json',
-            'Host': 'afkcraft-console.preview.emergentagent.com'
+            'Host': 'minecraft-afk.preview.emergentagent.com'
         }
         
         if self.token:
