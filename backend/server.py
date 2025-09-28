@@ -678,6 +678,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup_database():
+    """Initialize database on startup"""
+    global db_manager
+    if db_manager:
+        try:
+            await db_manager.initialize_database()
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize database: {e}")
+            logger.info("🔧 App will continue running, but some features may not work")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    client.close()
+    """Cleanup on shutdown"""
+    if client:
+        client.close()
+        logger.info("🔌 Database connection closed")
