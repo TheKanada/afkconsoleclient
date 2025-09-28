@@ -143,7 +143,51 @@ class MinecraftBot:
             self.is_connected = False
             asyncio.create_task(self._update_connection_status(False))
     
-    # Simplified - no packet handlers needed for basic functionality
+    def _handle_join_game(self, join_game_packet):
+        """Handle successful join to Minecraft server"""
+        logger.info(f"Bot {self.account_info.get('nickname')} successfully joined the game!")
+        self.is_connected = True
+        
+        # Update database
+        asyncio.create_task(self._update_connection_status(True))
+    
+    def _handle_chat_message(self, chat_packet):
+        """Handle incoming chat messages from Minecraft server"""
+        try:
+            # Extract message from packet
+            message_text = chat_packet.json_data
+            if isinstance(message_text, dict):
+                message_text = message_text.get('text', str(message_text))
+            
+            logger.info(f"Chat received: {message_text}")
+            
+            # Save to database
+            asyncio.create_task(self._save_chat_message(str(message_text), False))
+            
+        except Exception as e:
+            logger.error(f"Error handling chat message: {e}")
+    
+    def _handle_disconnect(self, disconnect_packet):
+        """Handle disconnection from Minecraft server"""
+        reason = getattr(disconnect_packet, 'json_data', 'Unknown reason')
+        logger.warning(f"Bot {self.account_info.get('nickname')} was disconnected: {reason}")
+        
+        self.is_connected = False
+        asyncio.create_task(self._update_connection_status(False))
+        
+        # Auto-reconnect if enabled
+        if self.server_settings.get('auto_connect_enabled') and self.is_running:
+            threading.Thread(target=self._auto_reconnect, daemon=True).start()
+    
+    def _handle_keep_alive(self, keep_alive_packet):
+        """Handle keep alive packets to maintain connection"""
+        try:
+            # Send keep alive response
+            response = serverbound.play.KeepAlivePacket()
+            response.keep_alive_id = keep_alive_packet.keep_alive_id
+            self.connection.write_packet(response)
+        except Exception as e:
+            logger.error(f"Error handling keep alive: {e}")
     
     def _anti_afk_loop(self):
         """Anti-AFK loop - simulate activity every 60 seconds"""
