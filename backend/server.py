@@ -452,8 +452,17 @@ async def login(user_data: UserLogin):
 
 @api_router.get("/auth/check-admin")
 async def check_admin():
-    admin_exists = await db.users.find_one({"role": "admin"})
-    return {"admin_exists": admin_exists is not None}
+    try:
+        # Check database connection
+        await check_database_connection()
+        
+        admin_exists = await db.users.find_one({"role": "admin"})
+        return {"admin_exists": admin_exists is not None}
+    except HTTPException as e:
+        if e.status_code == 503:
+            # Database not available, assume no admin exists so setup can proceed
+            return {"admin_exists": False, "database_status": "unavailable"}
+        raise
 
 @api_router.post("/users", response_model=dict)
 async def create_user(user_data: UserCreate, current_user: User = Depends(get_current_user)):
