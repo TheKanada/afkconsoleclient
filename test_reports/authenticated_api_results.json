@@ -1,0 +1,76 @@
+{
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 9,
+    "success_rate": 0.8181818181818182,
+    "timestamp": "2025-09-28T10:08:42.151000"
+  },
+  "results": [
+    {
+      "test": "Admin Login",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:39.075811"
+    },
+    {
+      "test": "Get Users List",
+      "success": false,
+      "details": "Expected 200, got 500: Internal Server Error",
+      "timestamp": "2025-09-28T10:08:39.245425"
+    },
+    {
+      "test": "Create New User",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:39.514882"
+    },
+    {
+      "test": "Get Minecraft Accounts",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:39.594225"
+    },
+    {
+      "test": "Create Cracked Account",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:39.646850"
+    },
+    {
+      "test": "Create Microsoft Account (should fail)",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2025-09-28T10:08:41.475770"
+    },
+    {
+      "test": "Get Chat Messages",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:41.516625"
+    },
+    {
+      "test": "Get Server Settings",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:41.594359"
+    },
+    {
+      "test": "Update Server Settings",
+      "success": false,
+      "details": "Expected 200, got 500: Internal Server Error",
+      "timestamp": "2025-09-28T10:08:42.075519"
+    },
+    {
+      "test": "Connect to Server",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:42.113043"
+    },
+    {
+      "test": "Disconnect from Server",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-09-28T10:08:42.150112"
+    }
+  ]
+}
