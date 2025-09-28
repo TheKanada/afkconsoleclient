@@ -139,22 +139,39 @@ const ConnectPage = () => {
   };
 
   const handleDisconnect = async () => {
+    if (selectedAccounts.length === 0) {
+      toast.error("Please select at least one account to disconnect");
+      return;
+    }
+
     setLoading(true);
     setConnectionStatus("connecting");
 
+    let successCount = 0;
+    let errorCount = 0;
+
     try {
-      const response = await axios.post(`${API}/server/disconnect`);
+      // Disconnect each selected account individually - REAL disconnections
+      for (const accountId of selectedAccounts) {
+        try {
+          await axios.post(`${API}/accounts/${accountId}/disconnect`);
+          successCount++;
+        } catch (error) {
+          errorCount++;
+        }
+      }
+
       setConnectionStatus("disconnected");
       
-      if (response.data.simulation) {
-        toast.success("Disconnection simulated", {
-          description: "Note: This was a simulation disconnection"
+      if (successCount > 0) {
+        toast.success(`✅ REAL DISCONNECTION: ${successCount} account(s) disconnected`, {
+          description: "Accounts disconnected from Minecraft server"
         });
       } else {
-        toast.success("Disconnected from server");
+        toast.error("❌ DISCONNECTION FAILED: Could not disconnect accounts");
       }
     } catch (error) {
-      console.error("Error disconnecting from server:", error);
+      console.error("Error disconnecting accounts:", error);
       toast.error("Failed to disconnect from server");
     } finally {
       setLoading(false);
