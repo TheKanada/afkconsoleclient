@@ -58,19 +58,33 @@ const Dashboard = () => {
   }, [API, user?.role]);
 
   useEffect(() => {
+    let interval = null;
+    let isMounted = true;
+    
     if (user?.role === "admin" || user?.role === "moderator") {
-      fetchDashboardStats();
-      if (user.role === "admin") {
-        fetchUsers();
+      // Initial data fetch
+      if (isMounted) {
+        fetchDashboardStats();
+        if (user.role === "admin") {
+          fetchUsers();
+        }
       }
       
       // Set up real-time updates every 5 seconds
-      const interval = setInterval(() => {
-        fetchDashboardStats();
+      interval = setInterval(() => {
+        if (isMounted) {
+          fetchDashboardStats();
+        }
       }, 5000);
-      
-      return () => clearInterval(interval);
     }
+    
+    // Cleanup function to prevent memory leaks
+    return () => {
+      isMounted = false;
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
   }, [user, fetchDashboardStats]);
 
   const fetchUsers = async () => {
