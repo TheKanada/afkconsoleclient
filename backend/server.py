@@ -11,7 +11,7 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 import jwt
-from passlib.context import CryptContext
+import bcrypt
 import asyncio
 import json
 
