@@ -720,7 +720,7 @@ async def delete_minecraft_account(account_id: str, current_user: User = Depends
         await minecraft_manager.disconnect_account(account_id)
     
     # Delete from database
-    result = await db.minecraft_accounts.delete_one({"id": account_id, "user_id": current_user.id})
+    await db.minecraft_accounts.delete_one({"id": account_id, "user_id": current_user.id})
     
     # Log deletion
     await manager.log_system_event(
