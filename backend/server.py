@@ -154,6 +154,13 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 async def health_check():
     return {"status": "ok", "message": "Minecraft AFK Console API"}
 
+# Demo Reset (for testing only)
+@api_router.post("/demo/reset")
+async def reset_demo():
+    # Clear all users for demo purposes
+    await db.users.delete_many({})
+    return {"message": "Demo reset - all users deleted"}
+
 # Auth Routes
 @api_router.post("/auth/setup-admin", response_model=Token)
 async def setup_admin(user_data: UserCreate):
