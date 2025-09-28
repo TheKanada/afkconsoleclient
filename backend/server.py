@@ -571,11 +571,70 @@ async def get_minecraft_accounts(current_user: User = Depends(get_current_user))
     accounts = await db.minecraft_accounts.find({"user_id": current_user.id}, {"_id": 0}).to_list(1000)
     return accounts
 
+@api_router.put("/accounts/{account_id}")
+async def update_minecraft_account(account_id: str, account_data: MinecraftAccountCreate, current_user: User = Depends(get_current_user)):
+    # Check database connection
+    await check_database_connection()
+    
+    # Find the account
+    account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    # Validate input based on account type
+    if account_data.account_type == "microsoft" and not account_data.email:
+        raise HTTPException(status_code=400, detail="Email required for Microsoft accounts")
+    elif account_data.account_type == "cracked" and not account_data.nickname:
+        raise HTTPException(status_code=400, detail="Nickname required for cracked accounts")
+    
+    # Prepare update data
+    update_data = {
+        "account_type": account_data.account_type,
+        "email": account_data.email if account_data.account_type == "microsoft" else None,
+        "nickname": account_data.nickname if account_data.account_type == "cracked" else None,
+    }
+    
+    # Update account
+    await db.minecraft_accounts.update_one(
+        {"id": account_id}, 
+        {"$set": update_data}
+    )
+    
+    # Log update
+    await manager.log_system_event(
+        "info", 
+        f"Account {account_id} updated by {current_user.username}",
+        current_user.id,
+        "account_update"
+    )
+    
+    return {"message": "Account updated successfully"}
+
 @api_router.delete("/accounts/{account_id}")
 async def delete_minecraft_account(account_id: str, current_user: User = Depends(get_current_user)):
-    result = await db.minecraft_accounts.delete_one({"id": account_id, "user_id": current_user.id})
-    if result.deleted_count == 0:
+    # Check database connection
+    await check_database_connection()
+    
+    # Find the account
+    account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
+    if not account:
         raise HTTPException(status_code=404, detail="Account not found")
+    
+    # Disconnect if connected
+    if minecraft_manager.is_account_connected(account_id):
+        await minecraft_manager.disconnect_account(account_id)
+    
+    # Delete from database
+    result = await db.minecraft_accounts.delete_one({"id": account_id, "user_id": current_user.id})
+    
+    # Log deletion
+    await manager.log_system_event(
+        "info", 
+        f"Account {account.get('email') or account.get('nickname')} deleted by {current_user.username}",
+        current_user.id,
+        "account_delete"
+    )
+    
     return {"message": "Account deleted successfully"}
 
 @api_router.post("/accounts/{account_id}/connect")
