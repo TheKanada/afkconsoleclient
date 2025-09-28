@@ -410,8 +410,9 @@ class MinecraftManager:
         if account_id in self.active_bots:
             await self.disconnect_account(account_id)
         
-        # Create and connect bot
-        bot = MinecraftBot(account_info, server_settings, self.db_manager)
+        # Create and connect bot - pass current event loop
+        current_loop = asyncio.get_event_loop()
+        bot = MinecraftBot(account_info, server_settings, self.db_manager, current_loop)
         success = await bot.connect()
         
         if success:
