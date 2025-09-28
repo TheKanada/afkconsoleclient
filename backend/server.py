@@ -44,9 +44,9 @@ class User(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserCreate(BaseModel):
-    username: str
-    password: str
-    role: str = "user"
+    username: str = Field(..., min_length=3, max_length=50, regex="^[a-zA-Z0-9_]+$")
+    password: str = Field(..., min_length=6, max_length=128)
+    role: str = Field(default="user", regex="^(admin|moderator|user)$")
 
 class UserLogin(BaseModel):
     username: str
