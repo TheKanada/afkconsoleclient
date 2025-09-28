@@ -928,7 +928,7 @@ async def update_server_settings(settings_data: ServerSettingsUpdate, current_us
     update_data = {k: v for k, v in settings_data.dict().items() if v is not None}
     update_data["updated_at"] = datetime.now(timezone.utc)
     
-    result = await db.server_settings.update_one(
+    await db.server_settings.update_one(
         {"user_id": current_user.id},
         {"$set": update_data},
         upsert=True
