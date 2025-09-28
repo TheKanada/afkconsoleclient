@@ -4,10 +4,7 @@ from typing import Dict, Optional, List
 from datetime import datetime, timezone
 import json
 import uuid
-from minecraft import authentication
-from minecraft.exceptions import YggdrasilError
-from minecraft.networking.connection import Connection
-from minecraft.networking.packets import Packet, clientbound, serverbound
+import socket
 import threading
 import time
 
