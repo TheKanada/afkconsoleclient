@@ -128,6 +128,10 @@ class MinecraftBot:
                 clientbound.play.KeepAlivePacket,
                 self._handle_keep_alive
             )
+            self.connection.register_packet_handler(
+                clientbound.play.RespawnPacket,
+                self._handle_world_change
+            )
             
             # Connect to server
             logger.info(f"Establishing Minecraft protocol connection...")
