@@ -29,14 +29,39 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [adminExists, setAdminExists] = useState(false);
 
+  // Network status monitoring
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      toast.success("Connection restored");
+    };
+    
+    const handleOffline = () => {
+      setIsOnline(false);
+      toast.error("Connection lost - check your network");
+    };
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   // Check if admin exists on app load
   useEffect(() => {
     const initializeApp = async () => {
       checkAuthToken();
-      await checkAdminExists();
+      if (isOnline) {
+        await checkAdminExists();
+      }
     };
     initializeApp();
-  }, []);
+  }, [isOnline]);
 
   const checkAdminExists = async () => {
     try {
