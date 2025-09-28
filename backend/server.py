@@ -635,40 +635,33 @@ async def disconnect_account(account_id: str, current_user: User = Depends(get_c
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
     
-    # TODO: Implement actual Minecraft protocol disconnection
-    # For now, this is a SIMULATION - no real connection to close
-    
-    # Update account status to offline (SIMULATION)
-    await db.minecraft_accounts.update_one(
-        {"id": account_id}, 
-        {"$set": {
-            "is_online": False, 
-            "last_seen": datetime.now(timezone.utc),
-            "connection_status": "disconnected"
-        }}
-    )
-    
-    # Log the simulated disconnection
-    await manager.log_system_event(
-        "info", 
-        f"SIMULATION: Account {account.get('email') or account.get('nickname')} marked as disconnected",
-        current_user.id,
-        "account_disconnect_simulation"
-    )
-    
-    # Broadcast real-time update
-    await manager.broadcast_message({
-        "type": "account_disconnected",
-        "account_id": account_id,
-        "account_name": account.get("email") or account.get("nickname"),
-        "simulation": True
-    })
-    
-    return {
-        "message": "Account disconnection simulated",
-        "simulation": True,
-        "note": "This is a simulation. Real Minecraft server connection is not implemented yet."
-    }
+    # Disconnect from actual Minecraft server
+    try:
+        success = await minecraft_manager.disconnect_account(account_id)
+        
+        # Log disconnection
+        await manager.log_system_event(
+            "info", 
+            f"Account {account.get('email') or account.get('nickname')} disconnected",
+            current_user.id,
+            "account_disconnect"
+        )
+        
+        # Broadcast real-time update
+        await manager.broadcast_message({
+            "type": "account_disconnected",
+            "account_id": account_id,
+            "account_name": account.get("email") or account.get("nickname")
+        })
+        
+        return {
+            "message": "Account successfully disconnected",
+            "success": True
+        }
+        
+    except Exception as e:
+        logger.error(f"Error disconnecting account {account_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Disconnection failed: {str(e)}")
 
 @api_router.post("/accounts/{account_id}/clear-inventory")
 async def clear_account_inventory(account_id: str, current_user: User = Depends(get_current_user)):
