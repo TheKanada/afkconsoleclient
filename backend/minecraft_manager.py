@@ -73,37 +73,7 @@ class MinecraftBot:
             logger.error(f"Error connecting to Minecraft server: {e}")
             return False
     
-    def _connection_loop(self):
-        """Main connection loop running in separate thread"""
-        try:
-            # Connect to server
-            self.connection.connect()
-            self.is_connected = True
-            
-            logger.info(f"Bot {self.account_info.get('nickname', self.account_info.get('email'))} connected successfully")
-            
-            # Start anti-AFK if enabled
-            if self.server_settings.get('anti_afk_enabled'):
-                self.anti_afk_enabled = True
-                threading.Thread(target=self._anti_afk_loop, daemon=True).start()
-            
-            # Send login messages if configured
-            if self.server_settings.get('login_message_enabled'):
-                self._send_login_messages()
-            
-            # Keep connection alive
-            while self.is_running and self.is_connected:
-                try:
-                    time.sleep(1)  # Keep bot alive
-                except Exception as e:
-                    logger.error(f"Error in connection loop: {e}")
-                    break
-                    
-        except Exception as e:
-            logger.error(f"Connection loop error: {e}")
-            self.is_connected = False
-        finally:
-            self._cleanup()
+    # Connection loop removed - using simplified approach
     
     def _handle_join_game(self, join_game_packet):
         """Handle successful join to game"""
