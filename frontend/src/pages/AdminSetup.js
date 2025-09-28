@@ -61,7 +61,6 @@ const AdminSetup = ({ setAdminExists }) => {
       const response = await axios.post(`${API}/auth/setup-admin`, {
         username: formData.username,
         password: formData.password,
-        role: "admin",
       });
 
       login(response.data.access_token, response.data.user);
