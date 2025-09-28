@@ -194,6 +194,9 @@
         - working: true
           agent: "main"
           comment: "Added @api_router.delete('/accounts/{account_id}') route to existing delete function"
+        - working: true
+          agent: "testing"
+          comment: "VERIFIED: Account deletion endpoint working correctly. DELETE /api/accounts/{account_id} properly validates account ownership, handles invalid IDs (404), requires authentication, disconnects connected accounts, and successfully deletes from database."
 
   - task: "Spam messages functionality"
     implemented: true
