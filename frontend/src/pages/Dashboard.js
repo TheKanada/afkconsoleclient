@@ -54,6 +54,20 @@ const Dashboard = () => {
         setLastUpdated(new Date());
       } catch (error) {
         console.error("Error fetching dashboard stats:", error);
+        if (error.response?.status === 503) {
+          toast.error("Database connection issue detected");
+        }
+      }
+    }
+  }, [API, user?.role]);
+
+  const fetchDatabaseStats = useCallback(async () => {
+    if (user?.role === "admin") {
+      try {
+        const response = await axios.get(`${API}/database/stats`);
+        setDatabaseStats(response.data);
+      } catch (error) {
+        console.error("Error fetching database stats:", error);
       }
     }
   }, [API, user?.role]);
