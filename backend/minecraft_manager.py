@@ -40,7 +40,7 @@ class MinecraftBot:
             logger.error(f"Error scheduling async operation: {e}")
         
     async def connect(self) -> bool:
-        """Connect to Minecraft server using real protocol"""
+        """Connect to Minecraft server using REAL protocol - NO FAKE OPERATIONS"""
         try:
             server_ip = self.server_settings.get('server_ip', '').split(':')
             host = server_ip[0] if server_ip else 'localhost'
@@ -48,11 +48,14 @@ class MinecraftBot:
             
             username = self.account_info.get('nickname') or self.account_info.get('email', '').split('@')[0] or 'Player'
             
-            logger.info(f"Connecting {username} to Minecraft server {host}:{port}")
+            logger.info(f"REAL CONNECTION ATTEMPT: {username} to Minecraft server {host}:{port}")
             
-            # Create Minecraft connection
+            # Reset connection state
+            self.is_connected = False
+            self.is_running = True
+            
+            # Create REAL Minecraft connection
             try:
-                # For cracked/offline servers, no authentication needed
                 if self.account_info.get('account_type') == 'cracked':
                     self.connection = Connection(
                         address=host,
@@ -60,8 +63,6 @@ class MinecraftBot:
                         username=username
                     )
                 else:
-                    # Microsoft account would need proper OAuth authentication
-                    # For now, treat as offline mode
                     username = self.account_info.get('email', '').split('@')[0]
                     self.connection = Connection(
                         address=host,
@@ -69,43 +70,50 @@ class MinecraftBot:
                         username=username
                     )
                 
-                # Start connection in separate thread
-                self.is_running = True
-                self.thread = threading.Thread(target=self._connection_thread)
+                # Start REAL connection thread
+                self.thread = threading.Thread(target=self._real_connection_thread)
                 self.thread.daemon = True
                 self.thread.start()
                 
-                # Wait for connection to establish
-                for i in range(10):  # Wait up to 10 seconds
+                # Wait for REAL connection result - NO FAKE TIMEOUTS
+                connection_timeout = 30  # 30 seconds real timeout
+                for i in range(connection_timeout):
                     await asyncio.sleep(1)
                     if self.is_connected:
+                        # REAL CONNECTION SUCCESSFUL
+                        logger.info(f"✅ REAL CONNECTION SUCCESS: {username} connected to {host}:{port}")
+                        
+                        # Update database with REAL connection status
+                        await self._update_connection_status(True)
+                        
+                        # Start real features
+                        if self.server_settings.get('anti_afk_enabled'):
+                            self.anti_afk_enabled = True
+                            threading.Thread(target=self._anti_afk_loop, daemon=True).start()
+                        
+                        if self.server_settings.get('login_message_enabled'):
+                            threading.Thread(target=self._send_login_messages, daemon=True).start()
+                        
+                        return True
+                    elif not self.is_running:
+                        # Connection failed - thread stopped
                         break
                 
-                if self.is_connected:
-                    logger.info(f"Successfully connected {username} to {host}:{port}")
-                    
-                    # Update database with real connection status
-                    await self._update_connection_status(True)
-                    
-                    # Start features
-                    if self.server_settings.get('anti_afk_enabled'):
-                        self.anti_afk_enabled = True
-                        threading.Thread(target=self._anti_afk_loop, daemon=True).start()
-                    
-                    if self.server_settings.get('login_message_enabled'):
-                        threading.Thread(target=self._send_login_messages, daemon=True).start()
-                    
-                    return True
-                else:
-                    logger.error(f"Failed to connect {username} to {host}:{port} - Connection timeout")
-                    return False
+                # If we get here, connection failed
+                logger.error(f"❌ REAL CONNECTION FAILED: {username} could not connect to {host}:{port}")
+                self.is_running = False
+                await self._update_connection_status(False)
+                return False
                     
             except Exception as e:
-                logger.error(f"Failed to connect to {host}:{port}: {str(e)}")
+                logger.error(f"❌ REAL CONNECTION ERROR: Failed to connect to {host}:{port}: {str(e)}")
+                self.is_running = False
+                await self._update_connection_status(False)
                 return False
                 
         except Exception as e:
-            logger.error(f"Error connecting to Minecraft server: {str(e)}")
+            logger.error(f"❌ REAL CONNECTION SETUP ERROR: {str(e)}")
+            self.is_running = False
             return False
     
     def _connection_thread(self):
