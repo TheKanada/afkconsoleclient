@@ -43,6 +43,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [showCreateUser, setShowCreateUser] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [databaseStats, setDatabaseStats] = useState(null);
 
   // Real-time updates
   const fetchDashboardStats = useCallback(async () => {
