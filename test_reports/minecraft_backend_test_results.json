@@ -1,43 +1,139 @@
 {
   "test_focus": "asyncio_threading_fixes_and_minecraft_connections",
   "summary": {
-    "total_tests": 4,
-    "passed_tests": 3,
-    "critical_failures": 1,
-    "success_rate": 0.75,
-    "timestamp": "2025-09-28T14:50:31.894719"
+    "total_tests": 18,
+    "passed_tests": 17,
+    "critical_failures": 0,
+    "success_rate": 0.9444444444444444,
+    "timestamp": "2025-09-28T14:51:00.209658"
   },
-  "critical_failures": [
-    "Admin Login: Cannot login with test credentials: {'detail': 'Incorrect username or password'}"
-  ],
+  "critical_failures": [],
   "detailed_results": [
     {
       "test": "Backend Health Check",
       "success": true,
       "details": "Backend running, database connected",
       "critical": false,
-      "timestamp": "2025-09-28T14:50:31.657403"
+      "timestamp": "2025-09-28T14:50:49.151019"
     },
     {
       "test": "MinecraftManager Import",
       "success": true,
       "details": "Unexpected but non-error response: 403",
       "critical": false,
-      "timestamp": "2025-09-28T14:50:31.695386"
+      "timestamp": "2025-09-28T14:50:49.188905"
     },
     {
       "test": "Check Admin Endpoint",
       "success": true,
-      "details": "Admin exists: True",
+      "details": "Admin exists: False",
       "critical": false,
-      "timestamp": "2025-09-28T14:50:31.737260"
+      "timestamp": "2025-09-28T14:50:49.226306"
     },
     {
-      "test": "Admin Login",
+      "test": "Admin Setup",
+      "success": true,
+      "details": "Admin created successfully: testadmin_mc",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.492364"
+    },
+    {
+      "test": "Protected Endpoint (With Auth)",
+      "success": true,
+      "details": "Accounts endpoint accessible with token",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.530586"
+    },
+    {
+      "test": "Protected Endpoint (No Auth)",
       "success": false,
-      "details": "Cannot login with test credentials: {'detail': 'Incorrect username or password'}",
-      "critical": true,
-      "timestamp": "2025-09-28T14:50:31.894413"
+      "details": "Accounts endpoint should reject unauthorized requests: 403",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.564713"
+    },
+    {
+      "test": "Create Cracked Account",
+      "success": true,
+      "details": "Created account: TestMinerBot",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.601147"
+    },
+    {
+      "test": "Create Microsoft Account (No Email)",
+      "success": true,
+      "details": "Properly rejects Microsoft account without email",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.643166"
+    },
+    {
+      "test": "Create Microsoft Account",
+      "success": true,
+      "details": "Created account: testminer@example.com",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.677054"
+    },
+    {
+      "test": "Get Accounts",
+      "success": true,
+      "details": "Retrieved 2 accounts",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.712619"
+    },
+    {
+      "test": "Update Account",
+      "success": true,
+      "details": "Account updated successfully",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.755445"
+    },
+    {
+      "test": "Get Server Settings",
+      "success": true,
+      "details": "Retrieved server settings",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.795520"
+    },
+    {
+      "test": "Update Server Settings",
+      "success": true,
+      "details": "Server settings updated: demo.minetest.net:30000",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:49.837943"
+    },
+    {
+      "test": "Minecraft Connection (Asyncio Check)",
+      "success": true,
+      "details": "No asyncio errors, connection failed for other reasons: Connection failed: 500: Failed to connect to Minecraft server. Check server IP and account credentials.",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:59.892966"
+    },
+    {
+      "test": "Minecraft Disconnection",
+      "success": true,
+      "details": "Disconnection successful: Account successfully disconnected",
+      "critical": false,
+      "timestamp": "2025-09-28T14:50:59.967274"
+    },
+    {
+      "test": "Dashboard Stats",
+      "success": true,
+      "details": "Stats retrieved - Total accounts: 16, Active: 3",
+      "critical": false,
+      "timestamp": "2025-09-28T14:51:00.011719"
+    },
+    {
+      "test": "Get Chat Messages",
+      "success": true,
+      "details": "Retrieved 0 chat messages",
+      "critical": false,
+      "timestamp": "2025-09-28T14:51:00.054029"
+    },
+    {
+      "test": "Clear Inventory (Not Connected)",
+      "success": true,
+      "details": "Properly rejects inventory clear when not connected",
+      "critical": false,
+      "timestamp": "2025-09-28T14:51:00.090931"
     }
   ]
 }
