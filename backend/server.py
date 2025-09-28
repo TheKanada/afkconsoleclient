@@ -652,6 +652,16 @@ async def get_chat_messages(current_user: User = Depends(get_current_user)):
 
 @api_router.post("/chats/send")
 async def send_message(message_data: SendMessage, current_user: User = Depends(get_current_user)):
+    # Check database connection first
+    await check_database_connection()
+    
+    # Validate input
+    if not message_data.account_ids:
+        raise HTTPException(status_code=400, detail="At least one account must be selected")
+    
+    if not message_data.message.strip():
+        raise HTTPException(status_code=400, detail="Message cannot be empty")
+    
     # Verify accounts belong to user
     accounts = await db.minecraft_accounts.find(
         {"id": {"$in": message_data.account_ids}, "user_id": current_user.id}
