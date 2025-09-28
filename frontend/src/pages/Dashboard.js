@@ -141,6 +141,46 @@ const Dashboard = () => {
         </Badge>
       </div>
 
+      {/* User Dashboard for regular users */}
+      {user?.role === "user" && (
+        <Card className="bg-gray-800 border-gray-700">
+          <CardContent className="p-8 text-center">
+            <Users className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+            <h3 className="text-xl font-semibold text-white mb-2">Welcome to AFK Console</h3>
+            <p className="text-gray-400 mb-6">
+              Use the navigation menu to access your Minecraft accounts, manage connections, 
+              and monitor chat messages.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/accounts")}
+                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              >
+                <Users className="w-4 h-4 mr-2" />
+                My Accounts
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/chats")}
+                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Chat Monitor
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/connect")}
+                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              >
+                <Wifi className="w-4 h-4 mr-2" />
+                Connect Server
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Real-time Stats Cards */}
       {(user?.role === "admin" || user?.role === "moderator") && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
