@@ -85,6 +85,42 @@ const AccountsPage = () => {
     }
   };
 
+  const handleConnectAccount = async (accountId) => {
+    try {
+      await axios.post(`${API}/accounts/${accountId}/connect`);
+      toast.success("Account connected successfully");
+      fetchAccounts();
+    } catch (error) {
+      console.error("Error connecting account:", error);
+      toast.error(error.response?.data?.detail || "Failed to connect account");
+    }
+  };
+
+  const handleDisconnectAccount = async (accountId) => {
+    try {
+      await axios.post(`${API}/accounts/${accountId}/disconnect`);
+      toast.success("Account disconnected successfully");
+      fetchAccounts();
+    } catch (error) {
+      console.error("Error disconnecting account:", error);
+      toast.error(error.response?.data?.detail || "Failed to disconnect account");
+    }
+  };
+
+  const handleClearInventory = async (accountId) => {
+    if (!window.confirm("Are you sure you want to clear this account's inventory?")) {
+      return;
+    }
+
+    try {
+      await axios.post(`${API}/accounts/${accountId}/clear-inventory`);
+      toast.success("Inventory cleared successfully");
+    } catch (error) {
+      console.error("Error clearing inventory:", error);
+      toast.error(error.response?.data?.detail || "Failed to clear inventory");
+    }
+  };
+
   const getAccountIcon = (accountType) => {
     return accountType === "microsoft" ? (
       <Mail className="w-4 h-4" />
