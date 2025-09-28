@@ -456,6 +456,64 @@ async def disconnect_from_server(current_user: User = Depends(get_current_user))
     # TODO: Implement actual Minecraft server disconnection
     return {"message": "Disconnection initiated"}
 
+# Dashboard Stats Route
+@api_router.get("/dashboard/stats", response_model=dict)
+async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
+    if current_user.role not in ["admin", "moderator"]:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # Get accounts stats
+    if current_user.role == "admin":
+        # Admin can see all accounts
+        total_accounts = await db.minecraft_accounts.count_documents({})
+        active_accounts = await db.minecraft_accounts.count_documents({"is_online": True})
+        online_accounts = await db.minecraft_accounts.find(
+            {"is_online": True}, {"_id": 0}
+        ).to_list(50)
+    else:
+        # Moderator sees only their accounts
+        total_accounts = await db.minecraft_accounts.count_documents({"user_id": current_user.id})
+        active_accounts = await db.minecraft_accounts.count_documents(
+            {"user_id": current_user.id, "is_online": True}
+        )
+        online_accounts = await db.minecraft_accounts.find(
+            {"user_id": current_user.id, "is_online": True}, {"_id": 0}
+        ).to_list(50)
+    
+    # Get messages count for today
+    today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    messages_today = await db.chat_messages.count_documents({
+        "timestamp": {"$gte": today}
+    })
+    
+    # Get recent activity
+    recent_messages = await db.chat_messages.find(
+        {}, {"_id": 0}
+    ).sort("timestamp", -1).limit(5).to_list(5)
+    
+    # Server status (simplified)
+    server_status = "online" if active_accounts > 0 else "offline"
+    
+    return {
+        "active_accounts": active_accounts,
+        "total_accounts": total_accounts,
+        "server_status": server_status,
+        "messages_today": messages_today,
+        "online_accounts": online_accounts,
+        "recent_activity": recent_messages
+    }
+
+# WebSocket endpoint for real-time updates
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            # Keep connection alive
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+
 # Include the router in the main app
 app.include_router(api_router)
 
