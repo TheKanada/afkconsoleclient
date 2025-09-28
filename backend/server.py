@@ -19,10 +19,29 @@ import json
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# MongoDB connection with error handling
+try:
+    mongo_url = os.environ.get('MONGO_URL')
+    db_name = os.environ.get('DB_NAME', 'minecraft_afk_console')
+    
+    if not mongo_url:
+        raise ValueError("MONGO_URL environment variable is required")
+    
+    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+    db = client[db_name]
+    
+    # Test connection
+    async def test_db_connection():
+        try:
+            await client.admin.command('ping')
+            logger.info("Successfully connected to MongoDB")
+        except Exception as e:
+            logger.error(f"Failed to connect to MongoDB: {e}")
+            raise
+            
+except Exception as e:
+    logger.error(f"Database configuration error: {e}")
+    raise
 
 # Create the main app without a prefix
 app = FastAPI()
