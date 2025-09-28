@@ -204,6 +204,18 @@ class MinecraftBot:
         except Exception as e:
             logger.error(f"Error handling keep alive: {e}")
     
+    def _handle_world_change(self, respawn_packet):
+        """Handle world change/respawn events"""
+        try:
+            logger.info(f"Bot {self.account_info.get('nickname')} changed world/dimension")
+            
+            # Send world change messages if enabled
+            if self.server_settings.get('world_change_message_enabled'):
+                threading.Thread(target=self._send_world_change_messages, daemon=True).start()
+                
+        except Exception as e:
+            logger.error(f"Error handling world change: {e}")
+    
     def _anti_afk_loop(self):
         """Real Anti-AFK loop - sends movement packets every 60 seconds"""
         while self.anti_afk_enabled and self.is_running:
