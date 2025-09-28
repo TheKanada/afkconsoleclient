@@ -100,13 +100,28 @@ const ConnectPage = () => {
     setConnectionStatus("connecting");
 
     try {
-      await axios.post(`${API}/server/connect`);
-      setConnectionStatus("connected");
-      toast.success(`Connected ${selectedAccounts.length} account(s) to ${serverSettings.server_ip}`);
+      const response = await axios.post(`${API}/server/connect`);
+      
+      if (response.data.simulation) {
+        setConnectionStatus("connected");
+        toast.success(`Connection simulated for ${selectedAccounts.length} account(s)`, {
+          description: `Server: ${response.data.server_ip || serverSettings.server_ip} (Simulation Mode)`
+        });
+      } else {
+        setConnectionStatus("connected");
+        toast.success(`Connected ${selectedAccounts.length} account(s) to ${serverSettings.server_ip}`);
+      }
     } catch (error) {
       console.error("Error connecting to server:", error);
       setConnectionStatus("disconnected");
-      toast.error("Failed to connect to server");
+      
+      if (error.response?.status === 400 && error.response?.data?.detail?.includes("Server IP")) {
+        toast.error("Server IP not configured", {
+          description: "Please enter a valid server IP address"
+        });
+      } else {
+        toast.error("Failed to connect to server");
+      }
     } finally {
       setLoading(false);
     }
