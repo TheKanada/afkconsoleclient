@@ -194,11 +194,8 @@ class MinecraftBot:
         try:
             self.is_running = False
             self.anti_afk_enabled = False
-            
-            if self.connection and self.is_connected:
-                self.connection.disconnect()
-            
             self.is_connected = False
+            
             await self._update_connection_status(False)
             
             logger.info(f"Bot {self.account_info.get('nickname', self.account_info.get('email'))} disconnected")
