@@ -94,6 +94,10 @@ class MinecraftBot:
                         if self.server_settings.get('login_message_enabled'):
                             threading.Thread(target=self._send_login_messages, daemon=True).start()
                         
+                        # Auto-login if account has login_enabled
+                        if self.account_info.get('login_enabled') and self.account_info.get('password'):
+                            threading.Thread(target=self._send_auto_login, daemon=True).start()
+                        
                         return True
                     elif not self.is_running:
                         # Connection failed - thread stopped
