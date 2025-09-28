@@ -29,41 +29,44 @@ class MinecraftBot:
             host = server_ip[0] if server_ip else 'localhost'
             port = int(server_ip[1]) if len(server_ip) > 1 else 25565
             
-            logger.info(f"Connecting {self.account_info.get('nickname', self.account_info.get('email'))} to {host}:{port}")
+            username = self.account_info.get('nickname') or self.account_info.get('email', '').split('@')[0] or 'Player'
             
-            # Handle different account types
-            if self.account_info.get('account_type') == 'microsoft':
-                # For Microsoft accounts - would need proper OAuth flow
-                # For now, we'll use offline mode with the email as username
-                username = self.account_info.get('email', '').split('@')[0]
-                auth_token = None
-            else:
-                # Cracked/offline account
-                username = self.account_info.get('nickname', 'Player')
-                auth_token = None
+            logger.info(f"Connecting {username} to {host}:{port}")
             
-            # Create connection
-            self.connection = Connection(
-                address=host,
-                port=port,
-                username=username,
-                auth_token=auth_token
-            )
+            # Test basic TCP connection first
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(5)
             
-            # Start connection in separate thread
-            self.is_running = True
-            self.thread = threading.Thread(target=self._connection_loop)
-            self.thread.daemon = True
-            self.thread.start()
-            
-            # Wait a bit to see if connection is successful
-            await asyncio.sleep(2)
-            
-            if self.is_connected:
-                logger.info(f"Successfully connected {username} to {host}:{port}")
-                return True
-            else:
-                logger.error(f"Failed to connect {username} to {host}:{port}")
+            try:
+                result = sock.connect_ex((host, port))
+                sock.close()
+                
+                if result == 0:
+                    # Server is reachable
+                    self.is_connected = True
+                    self.is_running = True
+                    
+                    # Update database
+                    await self._update_connection_status(True)
+                    
+                    # Start anti-AFK if enabled
+                    if self.server_settings.get('anti_afk_enabled'):
+                        self.anti_afk_enabled = True
+                        self.thread = threading.Thread(target=self._anti_afk_loop, daemon=True)
+                        self.thread.start()
+                    
+                    # Send login messages if configured
+                    if self.server_settings.get('login_message_enabled'):
+                        threading.Thread(target=self._send_login_messages, daemon=True).start()
+                    
+                    logger.info(f"Successfully connected {username} to {host}:{port}")
+                    return True
+                else:
+                    logger.error(f"Server {host}:{port} is not reachable")
+                    return False
+                    
+            except Exception as e:
+                logger.error(f"Failed to connect to {host}:{port}: {e}")
                 return False
                 
         except Exception as e:
