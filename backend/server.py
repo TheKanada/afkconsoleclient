@@ -547,6 +547,101 @@ async def get_users(current_user: User = Depends(get_current_user)):
     users = await db.users.find({}, {"password_hash": 0, "_id": 0}).to_list(1000)
     return users
 
+@api_router.put("/users/{user_id}")
+async def update_user(user_id: str, user_data: UserCreate, current_user: User = Depends(get_current_user)):
+    # Only admins can edit users
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Check database connection
+    await check_database_connection()
+    
+    # Find the user
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Prevent editing the last admin
+    if user["role"] == "admin" and user_data.role != "admin":
+        admin_count = await db.users.count_documents({"role": "admin"})
+        if admin_count <= 1:
+            raise HTTPException(status_code=400, detail="Cannot change role of the last admin user")
+    
+    # Prepare update data
+    update_data = {
+        "username": user_data.username,
+        "role": user_data.role
+    }
+    
+    # Update password if provided
+    if user_data.password:
+        update_data["password_hash"] = hash_password(user_data.password)
+    
+    # Update user
+    await db.users.update_one(
+        {"id": user_id}, 
+        {"$set": update_data}
+    )
+    
+    # Log update
+    await manager.log_system_event(
+        "info", 
+        f"User {user_data.username} updated by admin {current_user.username}",
+        current_user.id,
+        "user_update"
+    )
+    
+    return {"message": "User updated successfully"}
+
+@api_router.delete("/users/{user_id}")
+async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
+    # Only admins can delete users
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Check database connection
+    await check_database_connection()
+    
+    # Find the user
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Prevent deleting yourself
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+    
+    # Prevent deleting the last admin
+    if user["role"] == "admin":
+        admin_count = await db.users.count_documents({"role": "admin"})
+        if admin_count <= 1:
+            raise HTTPException(status_code=400, detail="Cannot delete the last admin user")
+    
+    # Disconnect all accounts of this user
+    user_accounts = await db.minecraft_accounts.find({"user_id": user_id}).to_list(1000)
+    for account in user_accounts:
+        if minecraft_manager.is_account_connected(account["id"]):
+            await minecraft_manager.disconnect_account(account["id"])
+    
+    # Delete user's accounts
+    await db.minecraft_accounts.delete_many({"user_id": user_id})
+    
+    # Delete user's server settings
+    await db.server_settings.delete_many({"user_id": user_id})
+    
+    # Delete the user
+    await db.users.delete_one({"id": user_id})
+    
+    # Log deletion
+    await manager.log_system_event(
+        "info", 
+        f"User {user['username']} and all associated data deleted by admin {current_user.username}",
+        current_user.id,
+        "user_delete"
+    )
+    
+    return {"message": "User and all associated data deleted successfully"}
+
 # Minecraft Account Routes
 @api_router.post("/accounts", response_model=dict)
 async def create_minecraft_account(account_data: MinecraftAccountCreate, current_user: User = Depends(get_current_user)):
