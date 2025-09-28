@@ -64,7 +64,6 @@ function App() {
         localStorage.removeItem('user');
       }
     }
-    setLoading(false);
   };
 
   const login = (token, userData) => {
