@@ -281,6 +281,82 @@ const AccountsPage = () => {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Edit Account Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent className="bg-gray-800 border-gray-700 text-white">
+            <DialogHeader>
+              <DialogTitle>Edit Minecraft Account</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleUpdateAccount} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit_account_type" className="text-gray-300">Account Type</Label>
+                <Select 
+                  value={editingAccount?.account_type || ""} 
+                  onValueChange={(value) => setEditingAccount({ ...editingAccount, account_type: value, email: "", nickname: "" })}
+                  required
+                >
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white" data-testid="edit-account-type-select">
+                    <SelectValue placeholder="Select account type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="microsoft">Microsoft Account</SelectItem>
+                    <SelectItem value="cracked">Cracked Account</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {editingAccount?.account_type === "microsoft" && (
+                <div className="space-y-2">
+                  <Label htmlFor="edit_email" className="text-gray-300">Email Address</Label>
+                  <Input
+                    id="edit_email"
+                    type="email"
+                    value={editingAccount?.email || ""}
+                    onChange={(e) => setEditingAccount({ ...editingAccount, email: e.target.value })}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="Enter Microsoft account email"
+                    required
+                    data-testid="edit-microsoft-email-input"
+                  />
+                </div>
+              )}
+
+              {editingAccount?.account_type === "cracked" && (
+                <div className="space-y-2">
+                  <Label htmlFor="edit_nickname" className="text-gray-300">Nickname</Label>
+                  <Input
+                    id="edit_nickname"
+                    type="text"
+                    value={editingAccount?.nickname || ""}
+                    onChange={(e) => setEditingAccount({ ...editingAccount, nickname: e.target.value })}
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="Enter nickname"
+                    required
+                    data-testid="edit-cracked-nickname-input"
+                  />
+                </div>
+              )}
+
+              <div className="flex gap-2 pt-4">
+                <Button type="submit" disabled={loading} className="btn-minecraft" data-testid="update-account-submit-button">
+                  {loading ? "Updating..." : "Update Account"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setShowEditDialog(false);
+                    setEditingAccount(null);
+                  }}
+                  className="border-gray-500 text-gray-300"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Accounts List */}
