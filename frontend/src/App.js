@@ -67,15 +67,30 @@ function App() {
     try {
       const response = await axios.get(`${API}/auth/check-admin`);
       setAdminExists(response.data.admin_exists);
+      
+      // Check if there's a database issue
+      if (response.data.database_status === "unavailable") {
+        toast.error("Database connection issue - please check MongoDB setup", {
+          duration: 8000,
+          description: "The application will work once database is properly configured"
+        });
+      }
     } catch (error) {
       console.error('Error checking admin status:', error);
-      if (error.response?.status >= 500) {
+      
+      if (error.response?.status === 503) {
+        toast.error('Database connection failed', {
+          duration: 8000,
+          description: 'Please ensure MongoDB is running and accessible'
+        });
+      } else if (error.response?.status >= 500) {
         toast.error('Server error - please try again later');
       } else if (!navigator.onLine) {
         toast.error('No internet connection - check your network');
       } else {
         toast.error('Failed to check admin status');
       }
+      
       // If we can't check admin status, assume no admin exists
       setAdminExists(false);
     } finally {
