@@ -739,21 +739,24 @@ async def send_message(message_data: SendMessage, current_user: User = Depends(g
     if len(accounts) != len(message_data.account_ids):
         raise HTTPException(status_code=400, detail="Invalid account IDs")
     
-    # Store outgoing messages
-    messages = []
-    for account_id in message_data.account_ids:
-        message = ChatMessage(
-            account_id=account_id,
-            message=message_data.message,
-            is_outgoing=True
+    # Send messages through Minecraft manager
+    success = await minecraft_manager.send_message_from_accounts(
+        message_data.account_ids, 
+        message_data.message
+    )
+    
+    if success:
+        # Log message sending
+        await manager.log_system_event(
+            "info", 
+            f"Chat message sent from {len(message_data.account_ids)} accounts: {message_data.message}",
+            current_user.id,
+            "chat_message_send"
         )
-        messages.append(message.dict())
-    
-    await db.chat_messages.insert_many(messages)
-    
-    # TODO: Send actual messages to Minecraft server
-    
-    return {"message": "Messages sent successfully"}
+        
+        return {"message": f"Message sent successfully from {len(message_data.account_ids)} account(s)"}
+    else:
+        raise HTTPException(status_code=400, detail="No accounts were able to send the message. Ensure accounts are connected to server.")
 
 # Server Settings Routes
 @api_router.get("/server-settings", response_model=dict)
