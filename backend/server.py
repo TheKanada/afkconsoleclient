@@ -112,6 +112,40 @@ class ServerSettingsUpdate(BaseModel):
     world_change_messages_enabled: Optional[bool] = None
     world_change_messages: Optional[List[dict]] = None
 
+class AccountAction(BaseModel):
+    account_id: str
+    action: str  # connect, disconnect, clear_inventory
+
+class DashboardStats(BaseModel):
+    active_accounts: int
+    total_accounts: int
+    server_status: str
+    messages_today: int
+    online_accounts: List[dict]
+    recent_activity: List[dict]
+
+# WebSocket Manager for real-time updates
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def broadcast_message(self, message: dict):
+        for connection in self.active_connections:
+            try:
+                await connection.send_json(message)
+            except:
+                # Remove dead connections
+                self.active_connections.remove(connection)
+
+manager = ConnectionManager()
+
 # Helper functions
 def hash_password(password: str) -> str:
     password_bytes = password.encode('utf-8')
