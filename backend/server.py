@@ -913,6 +913,85 @@ async def send_message(message_data: SendMessage, current_user: User = Depends(g
     else:
         raise HTTPException(status_code=400, detail="No accounts were able to send the message. Ensure accounts are connected to server.")
 
+@api_router.post("/chats/spam")
+async def send_spam_message(spam_data: SpamMessage, current_user: User = Depends(get_current_user)):
+    """Send spam messages with timed intervals"""
+    # Check database connection first
+    await check_database_connection()
+    
+    # Validate input
+    if not spam_data.account_ids:
+        raise HTTPException(status_code=400, detail="At least one account must be selected")
+    
+    if not spam_data.message.strip():
+        raise HTTPException(status_code=400, detail="Message cannot be empty")
+    
+    if spam_data.interval_seconds < 1 or spam_data.interval_seconds > 3600:
+        raise HTTPException(status_code=400, detail="Interval must be between 1 and 3600 seconds")
+    
+    # Verify accounts belong to user
+    accounts = await db.minecraft_accounts.find(
+        {"id": {"$in": spam_data.account_ids}, "user_id": current_user.id}
+    ).to_list(1000)
+    
+    if len(accounts) != len(spam_data.account_ids):
+        raise HTTPException(status_code=400, detail="Invalid account IDs")
+    
+    # Start spam task in background
+    asyncio.create_task(
+        _spam_message_task(
+            spam_data.account_ids, 
+            spam_data.message, 
+            spam_data.interval_seconds,
+            current_user.id
+        )
+    )
+    
+    # Log spam start
+    await manager.log_system_event(
+        "info", 
+        f"Spam messages started from {len(spam_data.account_ids)} accounts: {spam_data.message} (interval: {spam_data.interval_seconds}s)",
+        current_user.id,
+        "spam_message_start"
+    )
+    
+    return {
+        "message": f"Spam messages started from {len(spam_data.account_ids)} account(s) with {spam_data.interval_seconds}s interval",
+        "accounts_count": len(spam_data.account_ids),
+        "interval": spam_data.interval_seconds
+    }
+
+async def _spam_message_task(account_ids: List[str], message: str, interval: int, user_id: str):
+    """Background task to send spam messages at intervals"""
+    try:
+        spam_count = 0
+        # Send messages for a reasonable duration (e.g., 10 iterations)
+        for _ in range(10):
+            success = await minecraft_manager.send_message_from_accounts(account_ids, message)
+            
+            if success:
+                spam_count += 1
+                
+            # Wait for the specified interval
+            await asyncio.sleep(interval)
+        
+        # Log spam completion
+        await manager.log_system_event(
+            "info", 
+            f"Spam messages completed: {spam_count} messages sent from {len(account_ids)} accounts",
+            user_id,
+            "spam_message_complete"
+        )
+        
+    except Exception as e:
+        # Log spam error
+        await manager.log_system_event(
+            "error", 
+            f"Spam messages error: {str(e)}",
+            user_id,
+            "spam_message_error"
+        )
+
 # Server Settings Routes
 @api_router.get("/server-settings", response_model=dict)
 async def get_server_settings(current_user: User = Depends(get_current_user)):
