@@ -576,25 +576,55 @@ async def delete_minecraft_account(account_id: str, current_user: User = Depends
 
 @api_router.post("/accounts/{account_id}/connect")
 async def connect_account(account_id: str, current_user: User = Depends(get_current_user)):
+    # Check database connection
+    await check_database_connection()
+    
     # Find the account
     account = await db.minecraft_accounts.find_one({"id": account_id, "user_id": current_user.id})
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
     
-    # Update account status to online
+    # Check if server settings exist
+    server_settings = await db.server_settings.find_one({"user_id": current_user.id})
+    if not server_settings or not server_settings.get("server_ip"):
+        raise HTTPException(status_code=400, detail="Server IP not configured. Please set up server connection first.")
+    
+    # TODO: Implement actual Minecraft protocol connection
+    # For now, this is a SIMULATION - the account is not actually connected to any Minecraft server
+    # Real implementation would use minecraft-protocol library or similar
+    
+    # Update account status to online (SIMULATION)
     await db.minecraft_accounts.update_one(
         {"id": account_id}, 
-        {"$set": {"is_online": True, "last_seen": datetime.now(timezone.utc)}}
+        {"$set": {
+            "is_online": True, 
+            "last_seen": datetime.now(timezone.utc),
+            "connection_status": "simulated"  # Mark as simulated connection
+        }}
+    )
+    
+    # Log the simulated connection
+    await manager.log_system_event(
+        "info", 
+        f"SIMULATION: Account {account.get('email') or account.get('nickname')} marked as connected to {server_settings.get('server_ip')}",
+        current_user.id,
+        "account_connect_simulation"
     )
     
     # Broadcast real-time update
     await manager.broadcast_message({
         "type": "account_connected",
         "account_id": account_id,
-        "account_name": account.get("email") or account.get("nickname")
+        "account_name": account.get("email") or account.get("nickname"),
+        "simulation": True,
+        "server_ip": server_settings.get("server_ip")
     })
     
-    return {"message": "Account connected successfully"}
+    return {
+        "message": f"Account connection simulated for server {server_settings.get('server_ip')}",
+        "simulation": True,
+        "note": "This is a simulation. Real Minecraft server connection is not implemented yet."
+    }
 
 @api_router.post("/accounts/{account_id}/disconnect")
 async def disconnect_account(account_id: str, current_user: User = Depends(get_current_user)):
