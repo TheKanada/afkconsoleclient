@@ -706,6 +706,7 @@ async def update_minecraft_account(account_id: str, account_data: MinecraftAccou
     return {"message": "Account updated successfully"}
 
 @api_router.delete("/accounts/{account_id}")
+@api_router.delete("/accounts/{account_id}")
 async def delete_minecraft_account(account_id: str, current_user: User = Depends(get_current_user)):
     # Check database connection
     await check_database_connection()
