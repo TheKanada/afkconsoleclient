@@ -204,10 +204,8 @@
 
 ## test_plan:
   current_focus:
-    - "Fix asyncio and threading conflicts in minecraft_manager.py"
-    - "Test real Minecraft connections"
-  stuck_tasks:
-    - "Real Minecraft protocol integration using pyCraft"
+    - "All critical backend tasks completed and verified"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
