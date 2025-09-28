@@ -433,6 +433,18 @@ class MinecraftAFKAPITester:
             
             # Test server connection
             self.test_server_connection()
+            
+            print("\n🆕 Testing NEW FEATURES...")
+            
+            # Test account deletion (CRITICAL)
+            self.test_account_deletion()
+            
+            # Test spam messages functionality (NEW FEATURE)
+            self.test_spam_messages()
+            
+            # Test login and world change messages (ENHANCED FEATURE)
+            self.test_login_world_change_messages()
+            
         else:
             print("⚠️  Skipping authenticated tests - no valid token")
         
