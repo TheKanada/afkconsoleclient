@@ -105,7 +105,8 @@ const AdminSetup = ({ setAdminExists }) => {
               Setup Administrator Account
             </CardTitle>
             <p className="text-gray-400 mt-2">
-              Create the first admin account for your Minecraft AFK Console Client
+              Create the administrator account for your Minecraft AFK Console Client. 
+              This account will have full system access automatically.
             </p>
           </CardHeader>
           <CardContent>
