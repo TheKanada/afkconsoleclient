@@ -32,12 +32,12 @@ const ChatsPage = () => {
       fetchChatMessages();
     }
     
-    // Refresh chat messages every 5 seconds
+    // Refresh chat messages every 2 seconds for real-time feel
     const interval = setInterval(() => {
       if (isMounted) {
         fetchChatMessages();
       }
-    }, 5000);
+    }, 2000);
     
     return () => {
       isMounted = false;
