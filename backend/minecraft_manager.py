@@ -29,7 +29,7 @@ class MinecraftBot:
         self.thread = None
         
     async def connect(self) -> bool:
-        """Connect to Minecraft server"""
+        """Connect to Minecraft server using real protocol"""
         try:
             server_ip = self.server_settings.get('server_ip', '').split(':')
             host = server_ip[0] if server_ip else 'localhost'
@@ -37,46 +37,64 @@ class MinecraftBot:
             
             username = self.account_info.get('nickname') or self.account_info.get('email', '').split('@')[0] or 'Player'
             
-            logger.info(f"Connecting {username} to {host}:{port}")
+            logger.info(f"Connecting {username} to Minecraft server {host}:{port}")
             
-            # Test basic TCP connection first
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(5)
-            
+            # Create Minecraft connection
             try:
-                result = sock.connect_ex((host, port))
-                sock.close()
+                # For cracked/offline servers, no authentication needed
+                if self.account_info.get('account_type') == 'cracked':
+                    self.connection = Connection(
+                        address=host,
+                        port=port,
+                        username=username
+                    )
+                else:
+                    # Microsoft account would need proper OAuth authentication
+                    # For now, treat as offline mode
+                    username = self.account_info.get('email', '').split('@')[0]
+                    self.connection = Connection(
+                        address=host,
+                        port=port,
+                        username=username
+                    )
                 
-                if result == 0:
-                    # Server is reachable
-                    self.is_connected = True
-                    self.is_running = True
+                # Start connection in separate thread
+                self.is_running = True
+                self.thread = threading.Thread(target=self._connection_thread)
+                self.thread.daemon = True
+                self.thread.start()
+                
+                # Wait for connection to establish
+                for i in range(10):  # Wait up to 10 seconds
+                    await asyncio.sleep(1)
+                    if self.is_connected:
+                        break
+                
+                if self.is_connected:
+                    logger.info(f"Successfully connected {username} to {host}:{port}")
                     
-                    # Update database
+                    # Update database with real connection status
                     await self._update_connection_status(True)
                     
-                    # Start anti-AFK if enabled
+                    # Start features
                     if self.server_settings.get('anti_afk_enabled'):
                         self.anti_afk_enabled = True
-                        self.thread = threading.Thread(target=self._anti_afk_loop, daemon=True)
-                        self.thread.start()
+                        threading.Thread(target=self._anti_afk_loop, daemon=True).start()
                     
-                    # Send login messages if configured
                     if self.server_settings.get('login_message_enabled'):
                         threading.Thread(target=self._send_login_messages, daemon=True).start()
                     
-                    logger.info(f"Successfully connected {username} to {host}:{port}")
                     return True
                 else:
-                    logger.error(f"Server {host}:{port} is not reachable")
+                    logger.error(f"Failed to connect {username} to {host}:{port} - Connection timeout")
                     return False
                     
             except Exception as e:
-                logger.error(f"Failed to connect to {host}:{port}: {e}")
+                logger.error(f"Failed to connect to {host}:{port}: {str(e)}")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error connecting to Minecraft server: {e}")
+            logger.error(f"Error connecting to Minecraft server: {str(e)}")
             return False
     
     # Connection loop removed - using simplified approach
