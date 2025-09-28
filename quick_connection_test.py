@@ -32,7 +32,7 @@ async def quick_test():
             account_id = account["id"]
         
         # Setup server
-        settings_data = {"server_ip": "mc.hypixel.net:25565"}
+        settings_data = {"server_ip": "localhost:25565"}
         await session.put(f"{BACKEND_URL}/server-settings", json=settings_data, headers=headers)
         
         # Test connection
